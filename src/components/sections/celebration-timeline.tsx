@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer, staggerItem, viewportOnce } from '@/lib/animations'
 import { GraduationCap, Camera, Utensils, PartyPopper, Car, Wine } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
-import { WavyText } from '@/components/ui/wavy-text'
+
 import Tilt from 'react-parallax-tilt'
 
 const events = [
@@ -98,7 +98,7 @@ export function CelebrationTimeline() {
           </span>
           <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold mb-4">
             <span className="gradient-text-gold">
-              <WavyText text={t('Chương Trình Ngày Lễ', "The Day's Events")} />
+              {t('Chương Trình Ngày Lễ', "The Day's Events")}
             </span>
           </h2>
           <p className="text-base" style={{ color: '#A0A0A8' }}>

@@ -5,7 +5,7 @@ import { fadeUp, staggerContainer, staggerItem, viewportOnce } from '@/lib/anima
 import { MapPin, Calendar, Clock, Shirt, Car } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 import Tilt from 'react-parallax-tilt'
-import { WavyText } from '@/components/ui/wavy-text'
+
 
 const infoItems = [
   {
@@ -78,8 +78,8 @@ export function EventInfo() {
           </span>
           <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold mb-4">
             <span className="gradient-text-gold">
-              <WavyText text={t('MỌI THỨ', 'EVERYTHING')} />{' '}
-              <WavyText text={t('BẠN CẦN BIẾT', 'YOU NEED TO KNOW')} delay={0.2} />
+              {t('MỌI THỨ', 'EVERYTHING')} {' '}
+              {t('BẠN CẦN BIẾT', 'YOU NEED TO KNOW')}
             </span>
           </h2>
           <div className="section-divider mt-6 mx-auto w-32" />

@@ -5,7 +5,7 @@ import { fadeUp, staggerContainer, slideInLeft, slideInRight, viewportOnce } fro
 import { BookOpen, Briefcase, Trophy, FileText, GraduationCap, Rocket } from 'lucide-react'
 import { useRef } from 'react'
 import { useLanguage } from '@/lib/language-context'
-import { WavyText } from '@/components/ui/wavy-text'
+
 import Tilt from 'react-parallax-tilt'
 
 const milestones = [
@@ -103,7 +103,7 @@ export function Journey() {
           </span>
           <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold mb-4">
             <span className="gradient-text-gold">
-              <WavyText text={t('Câu Chuyện Bốn Năm', 'A Story Four Years In The Making')} />
+              {t('Câu Chuyện Bốn Năm', 'A Story Four Years In The Making')}
             </span>
           </h2>
           <p className="text-base" style={{ color: '#A0A0A8' }}>

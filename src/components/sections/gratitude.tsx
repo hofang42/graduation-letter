@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer, scaleInSlight, viewportOnce } from '@/lib/animations'
 import { Heart, Users, GraduationCap } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
-import { WavyText } from '@/components/ui/wavy-text'
+
 import Tilt from 'react-parallax-tilt'
 
 const gratitudeCards = [
@@ -68,7 +68,7 @@ export function Gratitude() {
           </span>
           <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold mb-4">
             <span className="gradient-text-warm">
-              <WavyText text={t('Gửi Đến Những Người Đặc Biệt', 'To Everyone Who Made This Possible')} />
+              {t('Gửi Đến Những Người Đặc Biệt', 'To Everyone Who Made This Possible')}
             </span>
           </h2>
           <div className="section-divider mt-6 mx-auto w-32" />

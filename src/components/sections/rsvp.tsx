@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { fadeUp, scaleIn, viewportOnce } from '@/lib/animations'
 import { Send, CheckCircle, User, Users, MessageSquare } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
-import { WavyText } from '@/components/ui/wavy-text'
+
 
 function ConfettiBurst() {
   const particles = useMemo(() => {
@@ -83,7 +83,7 @@ export function RSVP() {
           </span>
           <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold mb-4">
             <span className="gradient-text-warm">
-              <WavyText text={t('Bạn Sẽ Đến Chứ?', 'Will You Be There?')} />
+              {t('Bạn Sẽ Đến Chứ?', 'Will You Be There?')}
             </span>
           </h2>
           <p className="text-base" style={{ color: '#A0A0A8' }}>

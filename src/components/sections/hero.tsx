@@ -5,7 +5,7 @@ import { fadeUp, staggerContainer, staggerItem, viewportOnce } from '@/lib/anima
 import { Calendar, Clock, ChevronDown } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 import { Magnetic } from '@/components/ui/magnetic'
-import { WavyText } from '@/components/ui/wavy-text'
+
 
 export function Hero() {
   const prefersReduced = useReducedMotion()
@@ -90,9 +90,8 @@ export function Hero() {
             color: '#FFFFFF',
           }}
         >
-          <WavyText text="PHAN LÊ" />
-          <br />
-          <WavyText text="THANH HOÀNG" delay={0.3} />
+          PHAN LÊ<br />
+          THANH HOÀNG
         </motion.h1>
 
         {/* Degree */}
