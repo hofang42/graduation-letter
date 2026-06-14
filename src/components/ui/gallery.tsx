@@ -70,8 +70,7 @@ export const PhotoGallery = ({
     }),
   };
 
-  // Photo positions - horizontal layout with random y offsets
-  const photos = [
+  const [photosState, setPhotosState] = useState([
     {
       id: 1,
       order: 0,
@@ -117,7 +116,16 @@ export const PhotoGallery = ({
       direction: "left" as Direction,
       src: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=600&auto=format&fit=crop",
     },
-  ];
+  ]);
+
+  const sendToBack = (id: number) => {
+    setPhotosState((prev) => {
+      const minZIndex = Math.min(...prev.map((p) => p.zIndex));
+      return prev.map((p) =>
+        p.id === id ? { ...p, zIndex: minZIndex - 10 } : p
+      );
+    });
+  };
 
   return (
     <div className="mt-20 md:mt-40 relative">
@@ -136,7 +144,7 @@ export const PhotoGallery = ({
           >
             <div className="relative h-[220px] w-[220px]">
               {/* Render photos in reverse order so that higher z-index photos are rendered later in the DOM */}
-              {[...photos].reverse().map((photo) => (
+              {[...photosState].reverse().map((photo) => (
                 <motion.div
                   key={photo.id}
                   className="absolute left-0 top-0"
@@ -154,6 +162,7 @@ export const PhotoGallery = ({
                     src={photo.src}
                     alt="Memory photo"
                     direction={photo.direction}
+                    onClick={() => sendToBack(photo.id)}
                   />
                 </motion.div>
               ))}
@@ -202,6 +211,7 @@ export const Photo = ({
   direction,
   width,
   height,
+  onClick,
   ...props
 }: {
   src: string;
@@ -210,6 +220,7 @@ export const Photo = ({
   direction?: Direction;
   width: number;
   height: number;
+  onClick?: () => void;
 }) => {
   const [rotation, setRotation] = useState<number>(0);
   const x = useMotionValue(200);
@@ -269,6 +280,7 @@ export const Photo = ({
       )}
       onMouseMove={handleMouse}
       onMouseLeave={resetMouse}
+      onClick={onClick}
       draggable={false}
       tabIndex={0}
     >

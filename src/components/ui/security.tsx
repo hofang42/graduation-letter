@@ -4,6 +4,11 @@ import { useEffect } from 'react'
 
 export function Security() {
   useEffect(() => {
+    // Allow DevTools in development mode
+    if (process.env.NODE_ENV === 'development') {
+      return
+    }
+
     // Disable right click
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault()
