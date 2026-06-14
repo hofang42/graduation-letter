@@ -48,8 +48,8 @@ export function Security() {
     window.addEventListener('dragstart', handleDragStart)
 
     // Add a global CSS class to disable selection
-    document.body.style.userSelect = 'none'
-    document.body.style.WebkitUserSelect = 'none'
+    document.body.style.setProperty('user-select', 'none')
+    document.body.style.setProperty('-webkit-user-select', 'none')
 
     return () => {
       // Cleanup
@@ -57,8 +57,8 @@ export function Security() {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('dragstart', handleDragStart)
       
-      document.body.style.userSelect = ''
-      document.body.style.WebkitUserSelect = ''
+      document.body.style.removeProperty('user-select')
+      document.body.style.removeProperty('-webkit-user-select')
     }
   }, [])
 

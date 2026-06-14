@@ -33,24 +33,15 @@ export default function Icon() {
           background: 'transparent',
         }}
       >
-        <div
+        <img
+          src={base64Image}
           style={{
-            width: '100%',
-            height: '100%',
-            borderRadius: '50%',
-            overflow: 'hidden',
-            display: 'flex',
+            width: 128,
+            height: 128,
+            borderRadius: 64,
+            objectFit: 'cover',
           }}
-        >
-          <img
-            src={base64Image}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
-          />
-        </div>
+        />
       </div>
     ),
     // ImageResponse options
