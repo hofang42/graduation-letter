@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Outfit, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { CustomCursor } from "@/components/ui/custom-cursor";
@@ -23,6 +23,13 @@ const dancingScript = Dancing_Script({
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   title: "Lễ Tốt Nghiệp - Phan Lê Thanh Hoàng | Graduation Ceremony",
@@ -56,7 +63,7 @@ export default function RootLayout({
       lang="vi"
       className={`${playfair.variable} ${outfit.variable} ${dancingScript.variable} antialiased`}
     >
-      <body className="min-h-screen bg-[#0A0A0C] text-white">
+      <body className="min-h-screen bg-[#0A0A0C] text-white overflow-x-hidden w-full">
         <Security />
         <FloatingElements />
         <a href="#main-content" className="skip-to-content">
