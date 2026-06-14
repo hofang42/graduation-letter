@@ -37,6 +37,7 @@ export const metadata: Metadata = {
 };
 
 import { Security } from "@/components/ui/security";
+import { FloatingElements } from "@/components/ui/floating-elements";
 
 export default function RootLayout({
   children,
@@ -50,6 +51,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-[#0A0A0C] text-white">
         <Security />
+        <FloatingElements />
         <a href="#main-content" className="skip-to-content">
           Skip to main content
         </a>

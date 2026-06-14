@@ -4,6 +4,8 @@ import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer, staggerItem, viewportOnce } from '@/lib/animations'
 import { GraduationCap, Camera, Utensils, PartyPopper, Car, Wine } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
+import { WavyText } from '@/components/ui/wavy-text'
+import Tilt from 'react-parallax-tilt'
 
 const events = [
   {
@@ -95,7 +97,9 @@ export function CelebrationTimeline() {
             {t('Lịch Trình', 'Schedule')}
           </span>
           <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold mb-4">
-            <span className="gradient-text-gold">{t('Chương Trình Ngày Lễ', "The Day's Events")}</span>
+            <span className="gradient-text-gold">
+              <WavyText text={t('Chương Trình Ngày Lễ', "The Day's Events")} />
+            </span>
           </h2>
           <p className="text-base" style={{ color: '#A0A0A8' }}>
             {t('Hãy cùng chúng tôi trong từng khoảnh khắc', 'Join us for every moment')}
@@ -117,51 +121,52 @@ export function CelebrationTimeline() {
               <motion.div
                 key={index}
                 variants={staggerItem}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 className="relative"
               >
-                <div
-                  className="glass-card rounded-2xl p-6 h-full transition-all duration-300"
-                  style={{
-                    borderLeft: `3px solid ${event.color}`,
-                    ...(event.active ? {
-                      boxShadow: '0 0 30px rgba(220, 165, 67, 0.15), inset 0 0 30px rgba(220, 165, 67, 0.03)',
-                      border: '1px solid rgba(220, 165, 67, 0.25)',
-                      borderLeft: '3px solid #DCA543',
-                    } : {}),
-                  }}
-                >
-                  <div className="flex items-start gap-4">
-                    <div
-                      className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
-                      style={{
-                        background: `${event.color}10`,
-                        border: `1px solid ${event.color}18`,
-                      }}
-                    >
-                      <Icon size={24} style={{ color: event.color }} />
+                <Tilt glareEnable={true} glareMaxOpacity={0.08} glareColor={event.color} glarePosition="all" scale={1.03} tiltMaxAngleX={5} tiltMaxAngleY={5} className="h-full">
+                  <div
+                    className="glass-card rounded-2xl p-6 h-full transition-all duration-300"
+                    style={{
+                      borderLeft: `3px solid ${event.color}`,
+                      ...(event.active ? {
+                        boxShadow: '0 0 30px rgba(220, 165, 67, 0.15), inset 0 0 30px rgba(220, 165, 67, 0.03)',
+                        border: '1px solid rgba(220, 165, 67, 0.25)',
+                        borderLeft: '3px solid #DCA543',
+                      } : {}),
+                    }}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div
+                        className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
+                        style={{
+                          background: `${event.color}10`,
+                          border: `1px solid ${event.color}18`,
+                        }}
+                      >
+                        <Icon size={24} style={{ color: event.color }} />
+                      </div>
+                      <div>
+                        <span className="text-sm font-bold tracking-wide tabular-nums" style={{ color: event.color }}>
+                          {event.time}
+                        </span>
+                        <h3 className="font-[family-name:var(--font-playfair)] text-base font-semibold text-white mt-1">
+                          {t(event.titleVi, event.titleEn)}
+                        </h3>
+                        <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                          {t(event.descVi, event.descEn)}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-sm font-bold tracking-wide tabular-nums" style={{ color: event.color }}>
-                        {event.time}
-                      </span>
-                      <h3 className="font-[family-name:var(--font-playfair)] text-base font-semibold text-white mt-1">
-                        {t(event.titleVi, event.titleEn)}
-                      </h3>
-                      <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                        {t(event.descVi, event.descEn)}
-                      </p>
-                    </div>
+                    {event.active && (
+                      <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider"
+                        style={{ background: 'rgba(220, 165, 67, 0.12)', color: '#DCA543' }}
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#DCA543] animate-pulse" />
+                        {t('Sự kiện chính', 'Main Event')}
+                      </div>
+                    )}
                   </div>
-                  {event.active && (
-                    <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider"
-                      style={{ background: 'rgba(220, 165, 67, 0.12)', color: '#DCA543' }}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#DCA543] animate-pulse" />
-                      {t('Sự kiện chính', 'Main Event')}
-                    </div>
-                  )}
-                </div>
+                </Tilt>
               </motion.div>
             )
           })}

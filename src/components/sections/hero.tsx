@@ -4,6 +4,8 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { fadeUp, staggerContainer, staggerItem, viewportOnce } from '@/lib/animations'
 import { Calendar, Clock, ChevronDown } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
+import { Magnetic } from '@/components/ui/magnetic'
+import { WavyText } from '@/components/ui/wavy-text'
 
 export function Hero() {
   const prefersReduced = useReducedMotion()
@@ -88,9 +90,9 @@ export function Hero() {
             color: '#FFFFFF',
           }}
         >
-          Phan Lê
+          <WavyText text="PHAN LÊ" />
           <br />
-          Thanh Hoàng
+          <WavyText text="THANH HOÀNG" delay={0.3} />
         </motion.h1>
 
         {/* Degree */}
@@ -166,29 +168,33 @@ export function Hero() {
 
         {/* CTA buttons */}
         <motion.div variants={staggerItem} className="flex flex-wrap gap-4 justify-center">
-          <a
-            href="#rsvp"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-[#0A0A0C] font-semibold text-base transition-all duration-300 hover:scale-105"
-            style={{
-              background: 'linear-gradient(135deg, #DCA543, #E8C373)',
-              boxShadow: '0 4px 30px rgba(220, 165, 67, 0.3)',
-            }}
-            data-cursor="pointer"
-          >
-            {t('Xác Nhận Tham Dự', 'RSVP Now')}
-          </a>
-          <a
-            href="#journey"
-            className="inline-flex items-center gap-2 px-6 py-4 rounded-full font-medium text-base transition-all duration-300 hover:text-white"
-            style={{
-              color: '#A0A0A8',
-              border: '1px solid rgba(220, 165, 67, 0.2)',
-            }}
-            data-cursor="pointer"
-          >
-            {t('Xem Chi Tiết', 'View Details')}
-            <ChevronDown size={16} />
-          </a>
+          <Magnetic strength={40}>
+            <a
+              href="#rsvp"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-[#0A0A0C] font-semibold text-base transition-all duration-300 hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #DCA543, #E8C373)',
+                boxShadow: '0 4px 30px rgba(220, 165, 67, 0.3)',
+              }}
+              data-cursor="pointer"
+            >
+              {t('Xác Nhận Tham Dự', 'RSVP Now')}
+            </a>
+          </Magnetic>
+          <Magnetic strength={20}>
+            <a
+              href="#journey"
+              className="inline-flex items-center gap-2 px-6 py-4 rounded-full font-medium text-base transition-all duration-300 hover:text-white"
+              style={{
+                color: '#A0A0A8',
+                border: '1px solid rgba(220, 165, 67, 0.2)',
+              }}
+              data-cursor="pointer"
+            >
+              {t('Xem Chi Tiết', 'View Details')}
+              <ChevronDown size={16} />
+            </a>
+          </Magnetic>
         </motion.div>
       </motion.div>
     </section>

@@ -5,6 +5,8 @@ import { fadeUp, staggerContainer, slideInLeft, slideInRight, viewportOnce } fro
 import { BookOpen, Briefcase, Trophy, FileText, GraduationCap, Rocket } from 'lucide-react'
 import { useRef } from 'react'
 import { useLanguage } from '@/lib/language-context'
+import { WavyText } from '@/components/ui/wavy-text'
+import Tilt from 'react-parallax-tilt'
 
 const milestones = [
   {
@@ -100,7 +102,9 @@ export function Journey() {
             {t('Hành Trình', 'The Journey')}
           </span>
           <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold mb-4">
-            <span className="gradient-text-gold">{t('Câu Chuyện Bốn Năm', 'A Story Four Years In The Making')}</span>
+            <span className="gradient-text-gold">
+              <WavyText text={t('Câu Chuyện Bốn Năm', 'A Story Four Years In The Making')} />
+            </span>
           </h2>
           <p className="text-base" style={{ color: '#A0A0A8' }}>
             {t('Hành trình bốn năm đáng nhớ', 'A memorable four-year journey')}
@@ -155,28 +159,30 @@ export function Journey() {
                   </div>
 
                   <div className={`ml-14 md:ml-0 md:w-[calc(50%-2rem)] ${isLeft ? 'md:pr-8 md:text-right' : 'md:pl-8 md:text-left'}`}>
-                    <div
-                      className="rounded-xl p-6 transition-all duration-300 hover:border-white/10"
-                      style={{
-                        background: 'rgba(18, 18, 21, 0.6)',
-                        backdropFilter: 'blur(12px)',
-                        WebkitBackdropFilter: 'blur(12px)',
-                        border: '1px solid rgba(220, 165, 67, 0.1)',
-                      }}
-                    >
-                      <span
-                        className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 tracking-wider uppercase"
-                        style={{ background: `${milestone.color}15`, color: milestone.color }}
+                    <Tilt glareEnable={true} glareMaxOpacity={0.1} glareColor="#DCA543" glarePosition="all" scale={1.02} tiltMaxAngleX={5} tiltMaxAngleY={5}>
+                      <div
+                        className="rounded-xl p-6 transition-all duration-300 hover:border-white/10"
+                        style={{
+                          background: 'rgba(18, 18, 21, 0.6)',
+                          backdropFilter: 'blur(12px)',
+                          WebkitBackdropFilter: 'blur(12px)',
+                          border: '1px solid rgba(220, 165, 67, 0.1)',
+                        }}
                       >
-                        {milestone.year}
-                      </span>
-                      <h3 className="font-[family-name:var(--font-playfair)] text-lg font-semibold text-white mb-1">
-                        {t(milestone.titleVi, milestone.titleEn)}
-                      </h3>
-                      <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                        {t(milestone.descVi, milestone.descEn)}
-                      </p>
-                    </div>
+                        <span
+                          className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 tracking-wider uppercase"
+                          style={{ background: `${milestone.color}15`, color: milestone.color }}
+                        >
+                          {milestone.year}
+                        </span>
+                        <h3 className="font-[family-name:var(--font-playfair)] text-lg font-semibold text-white mb-1">
+                          {t(milestone.titleVi, milestone.titleEn)}
+                        </h3>
+                        <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                          {t(milestone.descVi, milestone.descEn)}
+                        </p>
+                      </div>
+                    </Tilt>
                   </div>
                 </motion.div>
               )

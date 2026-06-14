@@ -5,6 +5,7 @@ import { fadeUp, staggerContainer, clipReveal, viewportOnce } from '@/lib/animat
 import Image from 'next/image'
 import { useLanguage } from '@/lib/language-context'
 import { PhotoGallery } from '@/components/ui/gallery'
+import { WavyText } from '@/components/ui/wavy-text'
 
 const photos = [
   {
@@ -79,7 +80,9 @@ export function Memories() {
             {t('Kỷ Niệm', 'Memories')}
           </span>
           <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold mb-4">
-            <span className="gradient-text-gold">{t('Những Khoảnh Khắc Đáng Nhớ', 'Moments That Made It')}</span>
+            <span className="gradient-text-gold">
+              <WavyText text={t('Những Khoảnh Khắc Đáng Nhớ', 'Moments That Made It')} />
+            </span>
           </h2>
           <p className="text-base italic" style={{ color: '#A0A0A8' }}>
             {t('Qua từng kỳ thi, từng đêm thức, từng tiếng cười', 'Through every exam, every late night, every laugh')}

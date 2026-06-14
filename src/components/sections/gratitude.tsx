@@ -4,6 +4,8 @@ import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer, scaleInSlight, viewportOnce } from '@/lib/animations'
 import { Heart, Users, GraduationCap } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
+import { WavyText } from '@/components/ui/wavy-text'
+import Tilt from 'react-parallax-tilt'
 
 const gratitudeCards = [
   {
@@ -65,7 +67,9 @@ export function Gratitude() {
             {t('Lời Tri Ân', 'Gratitude')}
           </span>
           <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold mb-4">
-            <span className="gradient-text-warm">{t('Gửi Đến Những Người Đặc Biệt', 'To Everyone Who Made This Possible')}</span>
+            <span className="gradient-text-warm">
+              <WavyText text={t('Gửi Đến Những Người Đặc Biệt', 'To Everyone Who Made This Possible')} />
+            </span>
           </h2>
           <div className="section-divider mt-6 mx-auto w-32" />
         </motion.div>
@@ -83,41 +87,42 @@ export function Gratitude() {
               <motion.div
                 key={index}
                 variants={scaleInSlight}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className="relative group"
+                className="relative group h-full"
               >
-                <div
-                  className="rounded-2xl p-8 h-full flex flex-col items-center text-center transition-all duration-500"
-                  style={{
-                    background: card.gradient,
-                    backdropFilter: 'blur(24px)',
-                    WebkitBackdropFilter: 'blur(24px)',
-                    border: '1px solid rgba(220, 165, 67, 0.06)',
-                    borderTop: `2px solid ${card.borderColor}30`,
-                  }}
-                >
-                  <motion.div
-                    className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
+                <Tilt glareEnable={true} glareMaxOpacity={0.1} glareColor={card.color} glarePosition="all" scale={1.03} tiltMaxAngleX={10} tiltMaxAngleY={10} className="h-full">
+                  <div
+                    className="rounded-2xl p-8 h-full flex flex-col items-center text-center transition-all duration-500"
                     style={{
-                      background: `${card.color}10`,
-                      border: `1px solid ${card.color}20`,
-                    }}
-                    whileHover={{
-                      boxShadow: `0 0 30px ${card.color}30`,
-                      transition: { duration: 0.3 },
+                      background: card.gradient,
+                      backdropFilter: 'blur(24px)',
+                      WebkitBackdropFilter: 'blur(24px)',
+                      border: '1px solid rgba(220, 165, 67, 0.06)',
+                      borderTop: `2px solid ${card.borderColor}30`,
                     }}
                   >
-                    <Icon size={28} style={{ color: card.color }} />
-                  </motion.div>
+                    <motion.div
+                      className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
+                      style={{
+                        background: `${card.color}10`,
+                        border: `1px solid ${card.color}20`,
+                      }}
+                      whileHover={{
+                        boxShadow: `0 0 30px ${card.color}30`,
+                        transition: { duration: 0.3 },
+                      }}
+                    >
+                      <Icon size={28} style={{ color: card.color }} />
+                    </motion.div>
 
-                  <h3 className="font-[family-name:var(--font-playfair)] text-xl font-semibold text-white mb-4">
-                    {t(card.titleVi, card.titleEn)}
-                  </h3>
+                    <h3 className="font-[family-name:var(--font-playfair)] text-xl font-semibold text-white mb-4">
+                      {t(card.titleVi, card.titleEn)}
+                    </h3>
 
-                  <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
-                    {t(card.messageVi, card.messageEn)}
-                  </p>
-                </div>
+                    <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                      {t(card.messageVi, card.messageEn)}
+                    </p>
+                  </div>
+                </Tilt>
               </motion.div>
             )
           })}

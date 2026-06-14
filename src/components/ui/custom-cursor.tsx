@@ -16,10 +16,14 @@ export function CustomCursor() {
     trailPos.current.y += (mousePos.current.y - trailPos.current.y) * 0.15
 
     if (dotRef.current) {
-      dotRef.current.style.transform = `translate(${mousePos.current.x - 4}px, ${mousePos.current.y - 4}px)`
+      const isHovering = dotRef.current.classList.contains('hovering')
+      const offset = isHovering ? 30 : 4
+      dotRef.current.style.transform = `translate(${mousePos.current.x - offset}px, ${mousePos.current.y - offset}px)`
     }
     if (trailRef.current) {
-      trailRef.current.style.transform = `translate(${trailPos.current.x - 16}px, ${trailPos.current.y - 16}px)`
+      const isHovering = trailRef.current.classList.contains('hovering')
+      const offset = isHovering ? 40 : 16
+      trailRef.current.style.transform = `translate(${trailPos.current.x - offset}px, ${trailPos.current.y - offset}px)`
     }
 
     rafRef.current = requestAnimationFrame(animate)
