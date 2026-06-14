@@ -113,7 +113,11 @@ export function BlindBagReveal() {
                 {t('Thân mời bạn đến dự', "You're invited to")}
               </h2>
               <h1 className="text-4xl md:text-5xl lg:text-6xl text-center font-light font-[family-name:var(--font-playfair)] uppercase tracking-[0.08em] leading-[1.1]">
-                <span className="gradient-text-gold">Lễ Tốt Nghiệp<br/>của</span><br/>
+                <span className="gradient-text-gold">
+                  {t('Lễ Tốt Nghiệp', 'Graduation')}
+                  <br/>
+                  {t('của', 'Ceremony of')}
+                </span><br/>
                 <span className="text-white mt-4 block">Phan Lê<br/>Thanh Hoàng</span>
               </h1>
             </motion.div>
@@ -144,7 +148,7 @@ export function BlindBagReveal() {
                 style={{ width: tearMaskWidth }}
               >
                 <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay pointer-events-none" />
-                <span className="ml-16 text-[10px] text-white/40 tracking-[0.3em] uppercase">Tear Here</span>
+                <span className="ml-16 text-[10px] text-white/40 tracking-[0.3em] uppercase">{t('Xé Ở Đây', 'Tear Here')}</span>
               </motion.div>
 
               {/* The Draggable Tear Tab */}
@@ -179,8 +183,8 @@ export function BlindBagReveal() {
               <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay pointer-events-none" />
               
               {/* Premium Gold Logo/Stamp in the center of the bottom bag */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 opacity-20 border border-[#DCA543] rounded-full flex items-center justify-center pointer-events-none">
-                <span className="text-[#DCA543] font-[family-name:var(--font-playfair)] text-4xl">H</span>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 opacity-30 border-2 border-[#DCA543] rounded-full flex items-center justify-center pointer-events-none overflow-hidden shadow-[0_0_20px_rgba(220,165,67,0.3)]">
+                <img src="/assets/logo.png" alt="Logo" className="w-full h-full object-cover" />
               </div>
             </motion.div>
 

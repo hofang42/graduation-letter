@@ -35,6 +35,15 @@ export function Hero() {
         whileInView="visible"
         viewport={viewportOnce}
       >
+        {/* Logo */}
+        <motion.div variants={staggerItem} className="flex justify-center mb-8">
+          <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full p-1 shadow-[0_0_30px_rgba(220,165,67,0.2)]" style={{ background: 'linear-gradient(135deg, rgba(220,165,67,0.4), transparent)' }}>
+            <div className="w-full h-full rounded-full overflow-hidden bg-[#0A0A0C] border-2 border-[rgba(220,165,67,0.3)]">
+              <img src="/assets/logo.png" alt="Logo" className="w-full h-full object-cover" />
+            </div>
+          </div>
+        </motion.div>
+
         {/* Eyebrow */}
         <motion.div variants={staggerItem} className="mb-4">
           <span

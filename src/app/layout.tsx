@@ -36,6 +36,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { Security } from "@/components/ui/security";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -47,6 +49,7 @@ export default function RootLayout({
       className={`${playfair.variable} ${outfit.variable} ${dancingScript.variable} antialiased`}
     >
       <body className="min-h-screen bg-[#0A0A0C] text-white">
+        <Security />
         <a href="#main-content" className="skip-to-content">
           Skip to main content
         </a>
