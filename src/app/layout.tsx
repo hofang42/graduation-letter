@@ -63,7 +63,7 @@ export default function RootLayout({
       lang="vi"
       className={`${playfair.variable} ${outfit.variable} ${dancingScript.variable} antialiased`}
     >
-      <body className="min-h-screen bg-[#0A0A0C] text-white overflow-x-hidden w-full">
+      <body className="min-h-screen bg-[#0A0A0C] text-white overflow-x-clip w-full">
         <Security />
         <FloatingElements />
         <a href="#main-content" className="skip-to-content">
