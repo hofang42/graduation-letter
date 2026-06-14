@@ -28,11 +28,13 @@ export function WavyText({
     visible: {
       opacity: 1,
       y: 0,
+      z: 0,
       transition: { type: 'spring', damping: 12, stiffness: 200 },
     },
     hidden: {
       opacity: 0,
       y: 20,
+      z: 0,
       transition: { type: 'spring', damping: 12, stiffness: 200 },
     },
     hover: {
@@ -49,7 +51,7 @@ export function WavyText({
       initial="hidden"
       whileInView="visible"
       whileHover="hover"
-      viewport={{ once: true, margin: '-50px' }}
+      viewport={{ once: true, margin: '-10px' }}
     >
       {letters.map((letter, index) => (
         <motion.span 
