@@ -33,6 +33,13 @@ export const metadata: Metadata = {
     description:
       "Hãy cùng chúc mừng hành trình tốt nghiệp. Celebrate the graduation journey.",
     type: "website",
+    images: ["/assets/logo.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Lễ Tốt Nghiệp - Phan Lê Thanh Hoàng",
+    description: "Hãy cùng chúc mừng hành trình tốt nghiệp. Celebrate the graduation journey.",
+    images: ["/assets/logo.png"],
   },
 };
 

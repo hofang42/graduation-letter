@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, Variants } from 'framer-motion'
 
 export function WavyText({ 
   text, 
@@ -13,7 +13,7 @@ export function WavyText({
 }) {
   const letters = Array.from(text)
   
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -24,7 +24,7 @@ export function WavyText({
     }
   }
 
-  const child = {
+  const child: Variants = {
     visible: {
       opacity: 1,
       y: 0,
