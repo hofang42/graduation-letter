@@ -54,39 +54,47 @@ export function RSVP() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
+    setSubmitError(null)
+
+    const scriptUrl = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL
+    if (!scriptUrl) {
+      console.error('[RSVP] NEXT_PUBLIC_GOOGLE_SCRIPT_URL is not set.')
+      setSubmitError('Cấu hình thiếu: NEXT_PUBLIC_GOOGLE_SCRIPT_URL chưa được set trên môi trường này.')
+      setIsSubmitting(false)
+      return
+    }
+
+    const formBody = new URLSearchParams()
+    Object.entries(formData).forEach(([key, value]) => {
+      formBody.append(key, value)
+    })
+
+    console.info('[RSVP] Posting to:', new URL(scriptUrl).origin)
+
     try {
-      const scriptUrl = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL
-      if (!scriptUrl) {
-        console.error('Google Script URL is missing.')
-        // Even if it fails, we show success to user to not disrupt experience
-        setSubmitted(true)
-        return
-      }
-
-      // Convert the data to URLSearchParams for application/x-www-form-urlencoded
-      const formBody = new URLSearchParams()
-      Object.entries(formData).forEach(([key, value]) => {
-        formBody.append(key, value)
-      })
-
+      // Apps Script /exec không trả CORS headers — dùng no-cors để
+      // request vẫn tới được script (fire-and-forget). Verify bằng
+      // Google Sheet hoặc Apps Script execution log.
       await fetch(scriptUrl, {
         method: 'POST',
+        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: formBody.toString(),
+        redirect: 'follow',
       })
-      
+
       setSubmitted(true)
     } catch (error) {
-      console.error('Error submitting form:', error)
-      // Show success anyway to be nice
-      setSubmitted(true)
+      console.error('[RSVP] Fetch failed:', error)
+      const message = error instanceof Error ? error.message : 'Không gửi được, thử lại sau.'
+      setSubmitError(message)
     } finally {
       setIsSubmitting(false)
     }
@@ -261,6 +269,15 @@ export function RSVP() {
                     placeholder={t('Viết lời nhắn...', 'Write a message...')}
                   />
                 </div>
+
+                {submitError && (
+                  <div
+                    role="alert"
+                    className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+                  >
+                    {submitError}
+                  </div>
+                )}
 
                 <motion.button
                   type="submit"
