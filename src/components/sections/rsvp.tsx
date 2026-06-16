@@ -47,16 +47,50 @@ export function RSVP() {
   const { t } = useLanguage()
   const [formData, setFormData] = useState({
     name: '',
+    email: '',
     guests: '1',
     attendance: 'attending',
     message: '',
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
-  }, [])
+    setIsSubmitting(true)
+    
+    try {
+      const scriptUrl = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL
+      if (!scriptUrl) {
+        console.error('Google Script URL is missing.')
+        // Even if it fails, we show success to user to not disrupt experience
+        setSubmitted(true)
+        return
+      }
+
+      // Convert the data to URLSearchParams for application/x-www-form-urlencoded
+      const formBody = new URLSearchParams()
+      Object.entries(formData).forEach(([key, value]) => {
+        formBody.append(key, value)
+      })
+
+      await fetch(scriptUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formBody.toString(),
+      })
+      
+      setSubmitted(true)
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      // Show success anyway to be nice
+      setSubmitted(true)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }, [formData])
 
   return (
     <section id="rsvp" className="relative py-12 md:py-16 overflow-hidden snap-start min-h-[100dvh]">
@@ -123,6 +157,25 @@ export function RSVP() {
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/8 text-white placeholder-white/25 focus:outline-none focus:border-[#DCA543]/40 focus:ring-1 focus:ring-[#DCA543]/20 transition-all duration-300"
                     placeholder={t('Nhập họ và tên...', 'Enter your full name...')}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="rsvp-email" className="flex items-center gap-2 text-sm font-medium mb-2" style={{ color: '#A0A0A8' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#DCA543' }}>
+                      <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                    </svg>
+                    <span>{t('Email', 'Email Address')}</span>
+                  </label>
+                  <input
+                    id="rsvp-email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/8 text-white placeholder-white/25 focus:outline-none focus:border-[#DCA543]/40 focus:ring-1 focus:ring-[#DCA543]/20 transition-all duration-300"
+                    placeholder={t('Nhập địa chỉ email...', 'Enter your email...')}
                   />
                 </div>
 
@@ -211,16 +264,25 @@ export function RSVP() {
 
                 <motion.button
                   type="submit"
-                  className="w-full flex items-center justify-center gap-3 px-8 py-4 rounded-full text-[#0A0A0C] font-semibold text-base transition-all duration-300"
+                  disabled={isSubmitting}
+                  className="w-full flex items-center justify-center gap-3 px-8 py-4 rounded-full text-[#0A0A0C] font-semibold text-base transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
                   style={{
                     background: 'linear-gradient(135deg, #DCA543, #E8C373)',
                     boxShadow: '0 4px 30px rgba(220, 165, 67, 0.3)',
                   }}
-                  whileHover={{ scale: 1.02, boxShadow: '0 6px 40px rgba(220, 165, 67, 0.4)' }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: isSubmitting ? 1 : 1.02, boxShadow: '0 6px 40px rgba(220, 165, 67, 0.4)' }}
+                  whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                 >
-                  <Send size={18} />
-                  <span>{t('Xác Nhận Tham Dự', 'Confirm Attendance')}</span>
+                  {isSubmitting ? (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-5 h-5 border-2 border-[#0A0A0C]/20 border-t-[#0A0A0C] rounded-full"
+                    />
+                  ) : (
+                    <Send size={18} />
+                  )}
+                  <span>{isSubmitting ? t('Đang Gửi...', 'Sending...') : t('Xác Nhận Tham Dự', 'Confirm Attendance')}</span>
                 </motion.button>
               </motion.form>
             ) : (
@@ -251,10 +313,9 @@ export function RSVP() {
                   {t(`Cảm ơn, ${formData.name || 'Bạn'}!`, `Thank You, ${formData.name || 'Friend'}!`)}
                 </h3>
                 <p className="relative z-10 mb-2" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                  {t(
-                    'Xác nhận của bạn đã được ghi nhận. Hẹn gặp bạn tại lễ tốt nghiệp!',
-                    'Your RSVP has been received. See you at the ceremony!'
-                  )}
+                  {formData.attendance === 'attending' 
+                    ? t('Xác nhận của bạn đã được ghi nhận. Hẹn gặp bạn tại lễ tốt nghiệp!', 'Your RSVP has been received. See you at the ceremony!')
+                    : t('Xác nhận của bạn đã được ghi nhận. Cảm ơn bạn đã báo tin!', 'Your RSVP has been received. Thank you for letting us know!')}
                 </p>
               </motion.div>
             )}

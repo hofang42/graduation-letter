@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { Hero } from '@/components/sections/hero'
 import { Journey } from '@/components/sections/journey'
 import { Memories } from '@/components/sections/memories'
@@ -17,8 +18,9 @@ import Lenis from '@studio-freight/lenis'
 
 import { useLanguage } from '@/lib/language-context'
 
-function HomeContent() {
+function HomeContent({ isRevealed }: { isRevealed: boolean }) {
   const { t } = useLanguage()
+  const prefersReduced = useReducedMotion()
 
   const parallaxImages = [
     {
@@ -51,44 +53,100 @@ function HomeContent() {
     },
   ]
 
+  const containerVariants = {
+    hidden: {},
+    show: {
+      transition: {
+        delayChildren: prefersReduced ? 0 : 0.2,
+        staggerChildren: prefersReduced ? 0 : 0.14,
+      },
+    },
+  }
+
+  const groupVariants = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: prefersReduced ? 0 : 0.14,
+      },
+    },
+  }
+
+  const blockVariants = {
+    hidden: { opacity: 0, y: prefersReduced ? 0 : 28 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: prefersReduced ? 0.2 : 0.7,
+        ease: [0.22, 1, 0.36, 1] as const,
+      },
+    },
+  }
+
   return (
-    <main id="main-content" className="min-h-screen w-full">
-      <LanguageToggle />
-      
+    <motion.main
+      id="main-content"
+      className="min-h-screen w-full"
+      variants={containerVariants}
+      initial="hidden"
+      animate={isRevealed ? 'show' : 'hidden'}
+    >
+      <motion.div variants={blockVariants}>
+        <LanguageToggle />
+      </motion.div>
+
       {/* Zoom Parallax Entrance */}
-      <div className="relative flex h-[50vh] flex-col items-center justify-center pt-10 z-10">
+      <motion.div
+        variants={groupVariants}
+        className="relative flex h-[50vh] flex-col items-center justify-center pt-10 z-10"
+      >
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -top-1/2 left-1/2 h-[120vmin] w-[120vmin] -translate-x-1/2 rounded-full blur-[30px]"
           style={{ background: 'radial-gradient(ellipse at center, rgba(220, 165, 67, 0.15), transparent 50%)' }}
         />
-        <h1 className="text-center text-4xl md:text-6xl lg:text-7xl font-light font-[family-name:var(--font-playfair)] uppercase tracking-[0.08em] mb-4 text-white leading-[1.1]">
+        <motion.h1
+          variants={blockVariants}
+          className="text-center text-4xl md:text-6xl lg:text-7xl font-light font-[family-name:var(--font-playfair)] uppercase tracking-[0.08em] mb-4 text-white leading-[1.1]"
+        >
           Phan Lê<br />Thanh Hoàng
-        </h1>
-        <p className="text-base md:text-xl font-medium font-[family-name:var(--font-playfair)] tracking-[0.1em] uppercase mb-2 text-center px-4" style={{ color: '#DCA543' }}>
+        </motion.h1>
+        <motion.p
+          variants={blockVariants}
+          className="text-base md:text-xl font-medium font-[family-name:var(--font-playfair)] tracking-[0.1em] uppercase mb-2 text-center px-4"
+          style={{ color: '#DCA543' }}
+        >
           {t('Kỹ sư Công nghệ Thông tin', 'Software Engineer')}
-        </p>
-        <p className="text-sm md:text-base tracking-[0.15em] uppercase text-center px-4" style={{ color: '#A0A0A8' }}>
+        </motion.p>
+        <motion.p
+          variants={blockVariants}
+          className="text-sm md:text-base tracking-[0.15em] uppercase text-center px-4"
+          style={{ color: '#A0A0A8' }}
+        >
           {t('Đại học FPT Đà Nẵng', 'FPT University Da Nang')}
-        </p>
-      </div>
-      
-      <ZoomParallax images={parallaxImages} />
-      
-      {/* Rest of the site */}
-      <Hero />
-      <Journey />
-      <Memories />
-      <Gratitude />
-      <CelebrationTimeline />
-      <EventInfo />
-      <RSVP />
-      <Closing />
-    </main>
+        </motion.p>
+      </motion.div>
+
+      <motion.div variants={blockVariants}>
+        <ZoomParallax images={parallaxImages} />
+      </motion.div>
+
+      <motion.div variants={blockVariants}><Hero /></motion.div>
+      <motion.div variants={blockVariants}><Journey /></motion.div>
+      <motion.div variants={blockVariants}><Memories /></motion.div>
+      <motion.div variants={blockVariants}><Gratitude /></motion.div>
+      <motion.div variants={blockVariants}><CelebrationTimeline /></motion.div>
+      <motion.div variants={blockVariants}><EventInfo /></motion.div>
+      <motion.div variants={blockVariants}><RSVP /></motion.div>
+      <motion.div variants={blockVariants}><Closing /></motion.div>
+    </motion.main>
   )
 }
 
 export default function Home() {
+  const [isRevealed, setIsRevealed] = useState(false)
+
   useEffect(() => {
     const lenis = new Lenis()
 
@@ -102,8 +160,8 @@ export default function Home() {
 
   return (
     <LanguageProvider>
-      <BlindBagReveal />
-      <HomeContent />
+      <BlindBagReveal onReveal={() => setIsRevealed(true)} />
+      <HomeContent isRevealed={isRevealed} />
     </LanguageProvider>
   )
 }

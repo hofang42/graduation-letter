@@ -147,13 +147,21 @@ export function EventInfo() {
               <div
                 className="w-full rounded-2xl overflow-hidden relative min-h-[400px] flex flex-col items-center justify-center"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(220, 165, 67, 0.06), rgba(184, 134, 46, 0.03))',
-                  backdropFilter: 'blur(16px)',
-                  WebkitBackdropFilter: 'blur(16px)',
-                  border: '1px solid rgba(220, 165, 67, 0.1)',
+                  backgroundImage: 'url(/assets/image.png)',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  border: '1px solid rgba(220, 165, 67, 0.18)',
                 }}
               >
-                <div className="absolute inset-0 opacity-[0.03]" style={{
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, rgba(10,10,12,0.78), rgba(10,10,12,0.55) 55%, rgba(10,10,12,0.85))',
+                  }}
+                />
+
+                <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{
                   backgroundImage: `
                     linear-gradient(rgba(220,165,67,1) 1px, transparent 1px),
                     linear-gradient(90deg, rgba(220,165,67,1) 1px, transparent 1px)
