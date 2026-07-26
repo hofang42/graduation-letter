@@ -1,42 +1,48 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef } from 'react'
 
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null)
   const trailRef = useRef<HTMLDivElement>(null)
-  const mousePos = useRef({ x: -100, y: -100 })
-  const trailPos = useRef({ x: -100, y: -100 })
-  const rafRef = useRef<number>(0)
-  const isTouch = useRef(false)
-
-  const animate = useCallback(() => {
-    // Smooth trail follow with lerp
-    trailPos.current.x += (mousePos.current.x - trailPos.current.x) * 0.15
-    trailPos.current.y += (mousePos.current.y - trailPos.current.y) * 0.15
-
-    if (dotRef.current) {
-      const isHovering = dotRef.current.classList.contains('hovering')
-      const offset = isHovering ? 30 : 4
-      dotRef.current.style.transform = `translate(${mousePos.current.x - offset}px, ${mousePos.current.y - offset}px)`
-    }
-    if (trailRef.current) {
-      const isHovering = trailRef.current.classList.contains('hovering')
-      const offset = isHovering ? 40 : 16
-      trailRef.current.style.transform = `translate(${trailPos.current.x - offset}px, ${trailPos.current.y - offset}px)`
-    }
-
-    rafRef.current = requestAnimationFrame(animate)
-  }, [])
 
   useEffect(() => {
-    // Detect touch device
-    const checkTouch = () => { isTouch.current = true }
-    window.addEventListener('touchstart', checkTouch, { once: true })
+    // Skip entirely on touch devices and for reduced-motion users —
+    // no rAF loop, and the native cursor stays visible.
+    const skip =
+      window.matchMedia('(hover: none), (pointer: coarse)').matches ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (skip) return
+
+    // Native cursor is hidden only once this component is live.
+    document.documentElement.classList.add('has-custom-cursor')
+
+    const mousePos = { x: -100, y: -100 }
+    const trailPos = { x: -100, y: -100 }
+    let rafId = 0
+
+    function animate() {
+      // Smooth trail follow with lerp
+      trailPos.x += (mousePos.x - trailPos.x) * 0.15
+      trailPos.y += (mousePos.y - trailPos.y) * 0.15
+
+      if (dotRef.current) {
+        const isHovering = dotRef.current.classList.contains('hovering')
+        const offset = isHovering ? 30 : 4
+        dotRef.current.style.transform = `translate(${mousePos.x - offset}px, ${mousePos.y - offset}px)`
+      }
+      if (trailRef.current) {
+        const isHovering = trailRef.current.classList.contains('hovering')
+        const offset = isHovering ? 40 : 16
+        trailRef.current.style.transform = `translate(${trailPos.x - offset}px, ${trailPos.y - offset}px)`
+      }
+
+      rafId = requestAnimationFrame(animate)
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (isTouch.current) return
-      mousePos.current = { x: e.clientX, y: e.clientY }
+      mousePos.x = e.clientX
+      mousePos.y = e.clientY
     }
 
     const handleMouseEnter = (e: Event) => {
@@ -61,16 +67,16 @@ export function CustomCursor() {
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseover', handleMouseEnter)
     document.addEventListener('mouseout', handleMouseLeave)
-    rafRef.current = requestAnimationFrame(animate)
+    rafId = requestAnimationFrame(animate)
 
     return () => {
+      document.documentElement.classList.remove('has-custom-cursor')
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseover', handleMouseEnter)
       document.removeEventListener('mouseout', handleMouseLeave)
-      window.removeEventListener('touchstart', checkTouch)
-      cancelAnimationFrame(rafRef.current)
+      cancelAnimationFrame(rafId)
     }
-  }, [animate])
+  }, [])
 
   return (
     <>

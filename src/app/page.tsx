@@ -10,17 +10,27 @@ import { CelebrationTimeline } from '@/components/sections/celebration-timeline'
 import { EventInfo } from '@/components/sections/event-info'
 import { RSVP } from '@/components/sections/rsvp'
 import { Closing } from '@/components/sections/closing'
-import { LanguageProvider } from '@/lib/language-context'
+import { LanguageProvider, useLanguage } from '@/lib/language-context'
 import { LanguageToggle } from '@/components/ui/language-toggle'
 import { ZoomParallax } from '@/components/ui/zoom-parallax'
 import { BlindBagReveal } from '@/components/ui/blind-bag-reveal'
-import Lenis from '@studio-freight/lenis'
-
-import { useLanguage } from '@/lib/language-context'
+import { ChapterNav } from '@/components/ui/chapter-nav'
+import { useGuestName } from '@/lib/guest'
+import { setLenis } from '@/lib/lenis'
+import Lenis from 'lenis'
 
 function HomeContent({ isRevealed }: { isRevealed: boolean }) {
   const { t } = useLanguage()
   const prefersReduced = useReducedMotion()
+  const guest = useGuestName()
+
+  // When the intro overlay unmounts, hand keyboard focus to the page —
+  // must run after the commit that removes `inert` from <main>.
+  useEffect(() => {
+    if (isRevealed) {
+      document.getElementById('main-content')?.focus({ preventScroll: true })
+    }
+  }, [isRevealed])
 
   const parallaxImages = [
     {
@@ -87,14 +97,14 @@ function HomeContent({ isRevealed }: { isRevealed: boolean }) {
   return (
     <motion.main
       id="main-content"
-      className="min-h-screen w-full"
+      tabIndex={-1}
+      className="min-h-screen w-full outline-none"
       variants={containerVariants}
       initial="hidden"
       animate={isRevealed ? 'show' : 'hidden'}
+      inert={!isRevealed || undefined}
     >
-      <motion.div variants={blockVariants}>
-        <LanguageToggle />
-      </motion.div>
+      <ChapterNav visible={isRevealed} />
 
       {/* Zoom Parallax Entrance */}
       <motion.div
@@ -106,25 +116,32 @@ function HomeContent({ isRevealed }: { isRevealed: boolean }) {
           className="pointer-events-none absolute -top-1/2 left-1/2 h-[120vmin] w-[120vmin] -translate-x-1/2 rounded-full blur-[30px]"
           style={{ background: 'radial-gradient(ellipse at center, rgba(220, 165, 67, 0.15), transparent 50%)' }}
         />
+        <motion.p
+          variants={blockVariants}
+          className="mb-5 text-xl md:text-2xl"
+          style={{
+            fontFamily: 'var(--font-dancing), cursive',
+            color: 'rgba(232, 195, 115, 0.9)',
+          }}
+        >
+          {guest
+            ? t(`Thân gửi ${guest},`, `Dear ${guest},`)
+            : t('Thân gửi bạn,', 'Dear friend,')}
+        </motion.p>
         <motion.h1
           variants={blockVariants}
-          className="text-center text-4xl md:text-6xl lg:text-7xl font-light font-[family-name:var(--font-playfair)] uppercase tracking-[0.08em] mb-4 text-white leading-[1.1]"
+          className="text-center text-4xl md:text-6xl lg:text-7xl font-normal font-[family-name:var(--font-playfair)] uppercase tracking-[0.08em] mb-5 text-white leading-[1.1]"
         >
           Phan Lê<br />Thanh Hoàng
         </motion.h1>
         <motion.p
           variants={blockVariants}
-          className="text-base md:text-xl font-medium font-[family-name:var(--font-playfair)] tracking-[0.1em] uppercase mb-2 text-center px-4"
+          className="font-mono text-[11px] md:text-xs tracking-[0.22em] uppercase text-center px-4"
           style={{ color: '#DCA543' }}
         >
-          {t('Kỹ sư Công nghệ Thông tin', 'Software Engineer')}
-        </motion.p>
-        <motion.p
-          variants={blockVariants}
-          className="text-sm md:text-base tracking-[0.15em] uppercase text-center px-4"
-          style={{ color: '#A0A0A8' }}
-        >
-          {t('Đại học FPT Đà Nẵng', 'FPT University Da Nang')}
+          software engineer
+          <span className="text-white/30"> · </span>
+          <span className="text-[#A0A0A8]">class of 2026</span>
         </motion.p>
       </motion.div>
 
@@ -148,18 +165,41 @@ export default function Home() {
   const [isRevealed, setIsRevealed] = useState(false)
 
   useEffect(() => {
-    const lenis = new Lenis()
-
-    function raf(time: number) {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return
     }
 
-    requestAnimationFrame(raf)
+    const lenis = new Lenis()
+    setLenis(lenis)
+
+    let rafId = 0
+    function raf(time: number) {
+      lenis.raf(time)
+      rafId = requestAnimationFrame(raf)
+    }
+    rafId = requestAnimationFrame(raf)
+
+    return () => {
+      cancelAnimationFrame(rafId)
+      lenis.destroy()
+      setLenis(null)
+    }
+  }, [])
+
+  // A greeting for the engineers who will inevitably open DevTools.
+  useEffect(() => {
+    console.log(
+      '%c PHAN LÊ THANH HOÀNG %c Software Engineer · FPT University Da Nang · Class of 2026 %c\n> Bạn tìm ra console rồi đó. Hẹn gặp ở lễ tốt nghiệp! 🎓',
+      'background:#DCA543;color:#0A0A0C;padding:4px 8px;font-weight:bold;border-radius:2px',
+      'color:#E8C373;padding:4px',
+      'color:#A0A0A8'
+    )
   }, [])
 
   return (
     <LanguageProvider>
+      {/* Outside <main> so it stays usable while the intro overlay is up */}
+      <LanguageToggle />
       <BlindBagReveal onReveal={() => setIsRevealed(true)} />
       <HomeContent isRevealed={isRevealed} />
     </LanguageProvider>

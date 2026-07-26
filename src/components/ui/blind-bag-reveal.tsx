@@ -37,12 +37,13 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
   const [isOpened, setIsOpened] = useState(false)
   const [isEntering, setIsEntering] = useState(false)
   const [isCompletelyDone, setIsCompletelyDone] = useState(false)
-  const [isVeilGone, setIsVeilGone] = useState(false)
   const { t } = useLanguage()
   const prefersReducedMotion = useReducedMotion()
   const bagRef = useRef<HTMLDivElement>(null)
+  const dragHandleRef = useRef<HTMLDivElement>(null)
+  const enterButtonRef = useRef<HTMLButtonElement>(null)
   const enterTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const veilTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const confettiStoppedRef = useRef(false)
   const [bagWidth, setBagWidth] = useState(300)
   const dragLimit = Math.max(bagWidth - 44, 1)
 
@@ -80,7 +81,13 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
   useEffect(() => {
     return () => {
       if (enterTimeoutRef.current) clearTimeout(enterTimeoutRef.current)
+      confettiStoppedRef.current = true
     }
+  }, [])
+
+  // Move keyboard focus into the modal-like overlay on mount.
+  useEffect(() => {
+    dragHandleRef.current?.focus()
   }, [])
 
   const tearX = useMotionValue(0)
@@ -89,7 +96,11 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
   useEffect(() => {
     if (!isCompletelyDone) {
       document.body.style.overflow = 'hidden'
-      const preventDefault = (event: Event) => event.preventDefault()
+      const preventDefault = (event: TouchEvent) => {
+        // Multi-touch = pinch-to-zoom — never block it (WCAG 1.4.4).
+        if (event.touches.length > 1) return
+        event.preventDefault()
+      }
       document.addEventListener('touchmove', preventDefault, { passive: false })
 
       return () => {
@@ -124,16 +135,30 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
     )
   }
 
+  const skipIntro = () => {
+    if (isCompletelyDone) return
+    // Stop the side-cannon loop and clear airborne particles so nothing
+    // keeps firing over the revealed page.
+    confettiStoppedRef.current = true
+    confetti.reset()
+    setIsCompletelyDone(true)
+    onReveal?.()
+  }
+
   const handleOpen = () => {
     if (isOpened) return
 
     setIsOpened(true)
+
+    // Once the card is revealed, hand focus to its primary action.
+    setTimeout(() => enterButtonRef.current?.focus(), 900)
 
     if (!prefersReducedMotion) {
       const duration = 2600
       const end = Date.now() + duration
 
       const frame = () => {
+        if (confettiStoppedRef.current) return
         confetti({
           particleCount: 5,
           angle: 60,
@@ -162,6 +187,9 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
     <AnimatePresence>
       {!isCompletelyDone && (
         <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('Thiệp mời lễ tốt nghiệp', 'Graduation invitation')}
           className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-[#070708] px-3 py-4 sm:px-6"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
@@ -342,7 +370,7 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
                           <Ticket size={12} className="shrink-0" />
                           <span className="truncate">{t('Vé mời danh dự', 'Guest pass')}</span>
                         </div>
-                        <p className="mt-0.5 truncate text-[10px] uppercase tracking-[0.16em] text-white/45 sm:text-[11px]">
+                        <p className="mt-0.5 truncate text-[10px] uppercase tracking-[0.16em] text-white/60 sm:text-[11px]">
                           {t('Mã', 'No.')} 2026-HOANG
                         </p>
                       </div>
@@ -430,7 +458,7 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
                           className="flex flex-col items-center gap-1.5 rounded-md border border-white/5 bg-white/[0.02] py-2.5 text-center"
                         >
                           <Icon className="text-[#E8C373]" size={14} />
-                          <p className="text-[8.5px] uppercase tracking-[0.18em] text-white/45 sm:text-[9.5px]">
+                          <p className="text-[9px] uppercase tracking-[0.18em] text-white/60 sm:text-[10px]">
                             {item.label}
                           </p>
                           <p className="text-[11px] font-semibold leading-tight text-white/90 sm:text-[12.5px]">
@@ -454,6 +482,7 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
                       {t('Một dấu mốc, một hành trình mới.', 'One milestone, a new journey.')}
                     </p>
                     <button
+                      ref={enterButtonRef}
                       type="button"
                       onClick={completeReveal}
                       className="group inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-[#E8C373] to-[#DCA543] px-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#0A0A0C] shadow-[0_12px_35px_rgba(220,165,67,0.28)] transition-transform duration-300 hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E8C373] sm:h-11 sm:px-5 sm:text-xs"
@@ -492,15 +521,19 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
                 className="absolute inset-0 flex items-center border-y border-dashed border-white/20 bg-[#1A1A1E]"
                 style={{ width: tearMaskWidth, ...bagTexture }}
               >
-                <span className="ml-16 text-[10px] uppercase tracking-[0.3em] text-white/40">
+                <span className="ml-16 text-[11px] uppercase tracking-[0.3em] text-white/60">
                   {t('Xé ở đây', 'Tear here')}
                 </span>
               </motion.div>
 
               <motion.div
+                ref={dragHandleRef}
                 role="button"
                 tabIndex={isOpened ? -1 : 0}
-                aria-label={t('Kéo để mở thiệp', 'Drag to open invitation')}
+                aria-label={t(
+                  'Kéo sang phải hoặc nhấn Enter để mở thiệp',
+                  'Drag right or press Enter to open the invitation'
+                )}
                 className="absolute left-0 z-40 ml-[-10px] flex h-12 w-12 cursor-grab items-center justify-center rounded-full border-2 border-[#121215] bg-gradient-to-br from-[#E8C373] to-[#B8862E] shadow-[0_0_22px_rgba(220,165,67,0.52)] active:cursor-grabbing"
                 drag={!isOpened ? 'x' : false}
                 dragConstraints={{ left: 0, right: dragLimit }}
@@ -563,6 +596,18 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
               </span>
             </motion.div>
           </div>
+
+          {/* Escape hatch — never hard-gate the invitation behind a gesture */}
+          {!isEntering && (
+            <button
+              type="button"
+              onClick={skipIntro}
+              className="absolute bottom-4 right-4 z-[70] rounded-full px-4 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-white/60 border border-white/10 transition-colors duration-300 hover:text-white hover:border-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#E8C373] sm:bottom-6 sm:right-6"
+              data-cursor="pointer"
+            >
+              {t('Bỏ qua →', 'Skip intro →')}
+            </button>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

@@ -1,9 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { fadeUp, staggerContainer, scaleInSlight, viewportOnce } from '@/lib/animations'
+import { staggerContainer, scaleInSlight, viewportOnce } from '@/lib/animations'
 import { Heart, Users, GraduationCap } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
+import { SectionHeading } from '@/components/ui/section-heading'
 
 import Tilt from 'react-parallax-tilt'
 
@@ -44,7 +45,7 @@ export function Gratitude() {
   const { t } = useLanguage()
 
   return (
-    <section id="gratitude" className="relative py-12 md:py-16 overflow-hidden snap-start min-h-[100dvh]">
+    <section id="gratitude" className="relative py-12 md:py-16 overflow-hidden min-h-[100dvh]">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -53,26 +54,11 @@ export function Gratitude() {
       />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-12">
-        <motion.div
-          className="text-center mb-16"
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-        >
-          <span
-            className="inline-block text-[11px] font-medium uppercase tracking-[0.25em] mb-4"
-            style={{ color: '#DCA543' }}
-          >
-            {t('Lời Tri Ân', 'Gratitude')}
-          </span>
-          <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold mb-4">
-            <span className="gradient-text-warm">
-              {t('Gửi Đến Những Người Đặc Biệt', 'To Everyone Who Made This Possible')}
-            </span>
-          </h2>
-          <div className="section-divider mt-6 mx-auto w-32" />
-        </motion.div>
+        <SectionHeading
+          chapterId="gratitude"
+          title={t('Gửi Đến Những Người Đặc Biệt', 'To Everyone Who Made This Possible')}
+          gradient="warm"
+        />
 
         <motion.div
           className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"

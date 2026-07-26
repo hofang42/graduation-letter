@@ -1,34 +1,43 @@
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, Outfit, Dancing_Script } from "next/font/google";
+import { Playfair_Display, Outfit, Dancing_Script, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { CustomCursor } from "@/components/ui/custom-cursor";
+import { FloatingElements } from "@/components/ui/floating-elements";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin", "latin-ext"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
 const dancingScript = Dancing_Script({
   variable: "--font-dancing",
   subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+});
+
+// The "machine voice" — reserved for metadata: eyebrows, dates, times,
+// commit hashes, coordinates. Never headlines, never body prose.
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  themeColor: "#0A0A0C",
 };
 
 export const metadata: Metadata = {
@@ -50,9 +59,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { Security } from "@/components/ui/security";
-import { FloatingElements } from "@/components/ui/floating-elements";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -61,10 +67,16 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${playfair.variable} ${outfit.variable} ${dancingScript.variable} antialiased`}
+      className={`${playfair.variable} ${outfit.variable} ${dancingScript.variable} ${plexMono.variable} antialiased`}
     >
-      <body className="min-h-screen bg-[#0A0A0C] text-white overflow-x-clip w-full">
-        <Security />
+      {/* suppressHydrationWarning: browser extensions (adblock/VPN) inject
+          attributes like bis_register into <body> before React hydrates —
+          harmless, but React logs a mismatch warning without this. Only
+          suppresses attribute warnings on this one element. */}
+      <body
+        suppressHydrationWarning
+        className="min-h-screen bg-[#0A0A0C] text-white overflow-x-clip w-full"
+      >
         <FloatingElements />
         <a href="#main-content" className="skip-to-content">
           Skip to main content

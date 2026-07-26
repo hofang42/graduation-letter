@@ -2,25 +2,26 @@
 
 import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer, staggerItem, viewportOnce } from '@/lib/animations'
-import { MapPin, Calendar, Clock, Shirt, Car } from 'lucide-react'
+import { MapPin, Calendar, Clock, Shirt, Car, CalendarPlus } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
+import { SectionHeading } from '@/components/ui/section-heading'
+import { EVENT, downloadICS, googleCalendarUrl } from '@/lib/event'
 import Tilt from 'react-parallax-tilt'
-
 
 const infoItems = [
   {
     icon: MapPin,
     titleVi: 'Địa điểm',
     titleEn: 'Venue',
-    valueVi: 'FPTU Da Nang Campus',
-    valueEn: 'FPT University Da Nang, Khu công nghệ cao, Ngũ Hành Sơn, Đà Nẵng',
+    valueVi: EVENT.addressVi,
+    valueEn: EVENT.addressEn,
     color: '#DCA543',
   },
   {
     icon: Calendar,
     titleVi: 'Ngày',
     titleEn: 'Date',
-    valueVi: 'Tháng 8, 2026',
+    valueVi: 'Tháng 8, 2026 (ngày chính xác sẽ cập nhật)',
     valueEn: 'August 2026 (exact date TBA)',
     color: '#E8C373',
   },
@@ -28,7 +29,7 @@ const infoItems = [
     icon: Clock,
     titleVi: 'Thời gian',
     titleEn: 'Time',
-    valueVi: 'Mở cửa lúc 09:00 AM',
+    valueVi: 'Mở cửa lúc 09:00 sáng',
     valueEn: 'Doors open at 9:00 AM',
     color: '#DCA543',
   },
@@ -51,10 +52,10 @@ const infoItems = [
 ]
 
 export function EventInfo() {
-  const { t } = useLanguage()
+  const { lang, t } = useLanguage()
 
   return (
-    <section id="event-info" className="relative py-12 md:py-16 overflow-hidden snap-start min-h-[100dvh]">
+    <section id="event-info" className="relative py-12 md:py-16 overflow-hidden min-h-[100dvh]">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -63,27 +64,10 @@ export function EventInfo() {
       />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-12">
-        <motion.div
-          className="text-center mb-16"
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-        >
-          <span
-            className="inline-block text-[11px] font-medium uppercase tracking-[0.25em] mb-4"
-            style={{ color: '#DCA543' }}
-          >
-            {t('Thông Tin', 'Details')}
-          </span>
-          <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold mb-4">
-            <span className="gradient-text-gold">
-              {t('MỌI THỨ', 'EVERYTHING')} {' '}
-              {t('BẠN CẦN BIẾT', 'YOU NEED TO KNOW')}
-            </span>
-          </h2>
-          <div className="section-divider mt-6 mx-auto w-32" />
-        </motion.div>
+        <SectionHeading
+          chapterId="event-info"
+          title={<>{t('Mọi Thứ Bạn Cần Biết', 'Everything You Need To Know')}</>}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           <motion.div
@@ -100,32 +84,62 @@ export function EventInfo() {
                   key={index}
                   variants={staggerItem}
                 >
-                  <Tilt glareEnable={true} glareMaxOpacity={0.1} glareColor="#DCA543" glarePosition="all" scale={1.02}>
-                    <div
-                      className="glass-card rounded-xl p-5 transition-all duration-300 hover:border-white/10 h-full"
-                      style={{ borderLeft: `3px solid ${item.color}` }}
-                    >
-                      <div className="flex items-start gap-4">
-                        <div
-                          className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                          style={{ background: `${item.color}10` }}
-                        >
-                          <Icon size={18} style={{ color: item.color }} />
-                        </div>
-                        <div>
-                          <h3 className="font-[family-name:var(--font-playfair)] text-sm font-semibold text-white mb-1">
-                            {t(item.titleVi, item.titleEn)}
-                          </h3>
-                          <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                            {t(item.valueVi, item.valueEn)}
-                          </p>
-                        </div>
+                  <div
+                    className="glass-card rounded-xl p-5 transition-all duration-300 hover:border-white/10 hover:-translate-y-0.5 h-full"
+                    style={{ borderLeft: `3px solid ${item.color}` }}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div
+                        className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                        style={{ background: `${item.color}10` }}
+                      >
+                        <Icon size={18} style={{ color: item.color }} />
+                      </div>
+                      <div>
+                        <h3 className="font-[family-name:var(--font-playfair)] text-sm font-semibold text-white mb-1">
+                          {t(item.titleVi, item.titleEn)}
+                        </h3>
+                        <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                          {t(item.valueVi, item.valueEn)}
+                        </p>
                       </div>
                     </div>
-                  </Tilt>
+                  </div>
                 </motion.div>
               )
             })}
+
+            {/* Add to calendar */}
+            <motion.div variants={staggerItem} className="flex flex-wrap gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => downloadICS(lang)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105"
+                style={{
+                  background: 'rgba(220, 165, 67, 0.12)',
+                  border: '1px solid rgba(220, 165, 67, 0.2)',
+                  color: '#DCA543',
+                }}
+                data-cursor="pointer"
+              >
+                <CalendarPlus size={14} />
+                {t('Thêm vào lịch (.ics)', 'Add to calendar (.ics)')}
+              </button>
+              <a
+                href={googleCalendarUrl(lang)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105"
+                style={{
+                  border: '1px solid rgba(220, 165, 67, 0.2)',
+                  color: '#A0A0A8',
+                }}
+                data-cursor="pointer"
+              >
+                <Calendar size={14} />
+                Google Calendar
+              </a>
+            </motion.div>
           </motion.div>
 
           <motion.div
@@ -135,12 +149,12 @@ export function EventInfo() {
             viewport={viewportOnce}
             className="flex items-stretch"
           >
-            <Tilt 
-              glareEnable={true} 
-              glareMaxOpacity={0.15} 
-              glareColor="#DCA543" 
-              glarePosition="all" 
-              tiltMaxAngleX={5} 
+            <Tilt
+              glareEnable={true}
+              glareMaxOpacity={0.15}
+              glareColor="#DCA543"
+              glarePosition="all"
+              tiltMaxAngleX={5}
               tiltMaxAngleY={5}
               className="w-full flex"
             >
@@ -169,11 +183,7 @@ export function EventInfo() {
                   backgroundSize: '40px 40px',
                 }} />
 
-                <motion.div
-                  className="relative z-10 mb-6"
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                >
+                <div className="relative z-10 mb-6">
                   <div
                     className="w-20 h-20 rounded-full flex items-center justify-center"
                     style={{
@@ -184,19 +194,22 @@ export function EventInfo() {
                   >
                     <MapPin size={32} style={{ color: '#DCA543' }} />
                   </div>
-                </motion.div>
+                </div>
 
                 <div className="relative z-10 text-center px-8">
-                  <h3 className="font-[family-name:var(--font-playfair)] text-lg font-semibold text-white mb-2">
-                    FPT University Da Nang
+                  <h3 className="font-[family-name:var(--font-playfair)] text-lg font-semibold text-white mb-1">
+                    {EVENT.venue}
                   </h3>
+                  <p className="font-mono text-[10px] tracking-[0.18em] mb-3" style={{ color: 'rgba(220, 165, 67, 0.75)' }}>
+                    {EVENT.coords}
+                  </p>
                   <p className="text-sm leading-relaxed mb-4" style={{ color: '#A0A0A8' }}>
-                    Khu Công nghệ cao, Ngũ Hành Sơn,
+                    {t('Khu Công nghệ cao, Ngũ Hành Sơn,', 'Khu Cong nghe cao, Ngu Hanh Son,')}
                     <br />
-                    Đà Nẵng, Việt Nam
+                    {t('Đà Nẵng, Việt Nam', 'Da Nang, Vietnam')}
                   </p>
                   <a
-                    href="https://maps.google.com/?q=FPT+University+Da+Nang"
+                    href={EVENT.mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105"
@@ -210,10 +223,6 @@ export function EventInfo() {
                     <MapPin size={14} />
                     {t('Mở trong Google Maps', 'Open in Google Maps')}
                   </a>
-                </div>
-
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                  <div className="w-[200px] h-[200px] rounded-full border border-[#DCA543]/8 animate-ping" style={{ animationDuration: '3s' }} />
                 </div>
               </div>
             </Tilt>

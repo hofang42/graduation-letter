@@ -1,6 +1,6 @@
 {
   "name": "graduation-temp",
-  "version": "0.1.0",
+  "version": "1.5.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -11,12 +11,12 @@
   "dependencies": {
     "@base-ui/react": "^1.5.0",
     "@radix-ui/react-slot": "^1.2.5",
-    "@studio-freight/lenis": "^1.0.42",
     "@types/canvas-confetti": "^1.9.0",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.40.0",
+    "lenis": "^1.3.25",
     "lucide-react": "^1.18.0",
     "next": "16.2.9",
     "react": "19.2.4",

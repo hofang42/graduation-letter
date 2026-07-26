@@ -1,33 +1,58 @@
 "use client";
 
-import { Ref, forwardRef, useState, useEffect } from "react";
+import { Ref, forwardRef, useState, useEffect, useMemo } from "react";
 import Image, { ImageProps } from "next/image";
-import { motion, useMotionValue } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/lib/language-context";
+
+export interface GalleryPhoto {
+  src: string;
+  alt: string;
+  captionVi: string;
+  captionEn: string;
+}
+
+type Direction = "left" | "right";
+
+const DESKTOP_X = ["-320px", "-160px", "0px", "160px", "320px"];
+const MOBILE_X = ["-30px", "-15px", "0px", "15px", "30px"];
+const OFFSET_Y = ["15px", "32px", "8px", "22px", "44px"];
+const DIRECTIONS: Direction[] = ["left", "left", "right", "right", "left"];
 
 export const PhotoGallery = ({
+  photos,
   animationDelay = 0.5,
 }: {
+  photos: GalleryPhoto[];
   animationDelay?: number;
 }) => {
+  const { t } = useLanguage();
+  const prefersReduced = useReducedMotion();
   const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // First make the container visible with a fade-in
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
     const visibilityTimer = setTimeout(() => {
       setIsVisible(true);
     }, animationDelay * 1000);
 
-    // Then start the photo animations after a short delay
     const animationTimer = setTimeout(
       () => {
         setIsLoaded(true);
       },
       (animationDelay + 0.4) * 1000
-    ); // Add 0.4s for the opacity transition
+    );
 
     return () => {
       clearTimeout(visibilityTimer);
@@ -35,19 +60,17 @@ export const PhotoGallery = ({
     };
   }, [animationDelay]);
 
-  // Animation variants for the container
   const containerVariants = {
     hidden: { opacity: 1 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1, // Reduced from 0.3 to 0.1 since we already have the fade-in delay
+        staggerChildren: prefersReduced ? 0 : 0.15,
+        delayChildren: prefersReduced ? 0 : 0.1,
       },
     },
   };
 
-  // Animation variants for each photo
   const photoVariants = {
     hidden: {
       x: 0,
@@ -55,68 +78,37 @@ export const PhotoGallery = ({
       rotate: 0,
       scale: 1,
     },
-    visible: (custom: { x: any; y: any; order: number }) => ({
+    visible: (custom: { x: string; y: string; order: number }) => ({
       x: custom.x,
       y: custom.y,
       rotate: 0,
       scale: 1,
-      transition: {
-        type: "spring" as const,
-        stiffness: 70,
-        damping: 12,
-        mass: 1,
-        delay: custom.order * 0.15,
-      },
+      transition: prefersReduced
+        ? { duration: 0 }
+        : {
+            type: "spring" as const,
+            stiffness: 70,
+            damping: 12,
+            mass: 1,
+            delay: custom.order * 0.15,
+          },
     }),
   };
 
-  const [photosState, setPhotosState] = useState([
-    {
-      id: 1,
-      order: 0,
-      x: "-320px",
-      y: "15px",
-      zIndex: 50, // Highest z-index (on top)
-      direction: "left" as Direction,
-      src: "https://images.unsplash.com/photo-1541250848049-b4f7141dca3f?q=80&w=600&auto=format&fit=crop",
-    },
-    {
-      id: 2,
-      order: 1,
-      x: "-160px",
-      y: "32px",
-      zIndex: 40,
-      direction: "left" as Direction,
-      src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=600&auto=format&fit=crop",
-    },
-    {
-      id: 3,
-      order: 2,
-      x: "0px",
-      y: "8px",
-      zIndex: 30,
-      direction: "right" as Direction,
-      src: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=600&auto=format&fit=crop",
-    },
-    {
-      id: 4,
-      order: 3,
-      x: "160px",
-      y: "22px",
-      zIndex: 20,
-      direction: "right" as Direction,
-      src: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=600&auto=format&fit=crop",
-    },
-    {
-      id: 5,
-      order: 4,
-      x: "320px",
-      y: "44px",
-      zIndex: 10, // Lowest z-index (at bottom)
-      direction: "left" as Direction,
-      src: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=600&auto=format&fit=crop",
-    },
-  ]);
+  const initialState = useMemo(
+    () =>
+      photos.slice(0, 5).map((photo, i) => ({
+        ...photo,
+        id: i + 1,
+        order: i,
+        y: OFFSET_Y[i],
+        zIndex: 50 - i * 10,
+        direction: DIRECTIONS[i],
+      })),
+    [photos]
+  );
+
+  const [photosState, setPhotosState] = useState(initialState);
 
   const sendToBack = (id: number) => {
     setPhotosState((prev) => {
@@ -127,9 +119,14 @@ export const PhotoGallery = ({
     });
   };
 
+  // The photo currently on top of the pile — its caption is shown below.
+  const topPhoto = photosState.reduce((top, p) =>
+    p.zIndex > top.zIndex ? p : top
+  );
+
   return (
-    <div className="mt-20 md:mt-40 relative">
-      <div className="relative mb-8 h-[350px] w-full items-center justify-center flex lg:flex overflow-visible">
+    <div className="mt-16 md:mt-32 relative">
+      <div className="relative mb-6 h-[320px] w-full items-center justify-center flex overflow-visible">
         <motion.div
           className="relative mx-auto flex w-full max-w-7xl justify-center"
           initial={{ opacity: 0 }}
@@ -143,15 +140,14 @@ export const PhotoGallery = ({
             animate={isLoaded ? "visible" : "hidden"}
           >
             <div className="relative h-[220px] w-[220px]">
-              {/* Render photos in reverse order so that higher z-index photos are rendered later in the DOM */}
-              {[...photosState].reverse().map((photo) => (
+              {[...photosState].sort((a, b) => a.zIndex - b.zIndex).map((photo) => (
                 <motion.div
                   key={photo.id}
                   className="absolute left-0 top-0"
-                  style={{ zIndex: photo.zIndex }} // Apply z-index directly in style
+                  style={{ zIndex: photo.zIndex }}
                   variants={photoVariants}
                   custom={{
-                    x: typeof window !== 'undefined' && window.innerWidth < 768 ? '0px' : photo.x,
+                    x: isMobile ? MOBILE_X[photo.order] : DESKTOP_X[photo.order],
                     y: photo.y,
                     order: photo.order,
                   }}
@@ -160,9 +156,10 @@ export const PhotoGallery = ({
                     width={220}
                     height={220}
                     src={photo.src}
-                    alt="Memory photo"
+                    alt={photo.alt}
                     direction={photo.direction}
-                    onClick={() => sendToBack(photo.id)}
+                    tilt={(((photo.order * 137 + 61) % 30) / 10) + 1}
+                    onActivate={() => sendToBack(photo.id)}
                   />
                 </motion.div>
               ))}
@@ -170,28 +167,29 @@ export const PhotoGallery = ({
           </motion.div>
         </motion.div>
       </div>
-      <div className="flex w-full justify-center">
-        <a 
-          href="#memories-details" 
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-[#0A0A0C] font-semibold text-sm transition-all duration-300 hover:scale-105"
-          style={{
-            background: 'linear-gradient(135deg, #DCA543, #E8C373)',
-            boxShadow: '0 4px 30px rgba(220, 165, 67, 0.3)',
-          }}
-        >
-          Xem Thêm Ảnh
-        </a>
+
+      {/* Caption of the top photo */}
+      <div className="flex flex-col items-center gap-2 min-h-[3.5rem]">
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={topPhoto.id}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.35 }}
+            className="text-base italic text-center px-6"
+            style={{ color: 'rgba(232, 195, 115, 0.85)' }}
+          >
+            {t(topPhoto.captionVi, topPhoto.captionEn)}
+          </motion.p>
+        </AnimatePresence>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-[#A0A0A8]">
+          {t('Chạm hoặc kéo ảnh để xem tấm kế tiếp', 'Tap or drag a photo to see the next one')}
+        </p>
       </div>
     </div>
   );
 };
-
-function getRandomNumberInRange(min: number, max: number): number {
-  if (min >= max) {
-    throw new Error("Min value should be less than max value");
-  }
-  return Math.random() * (max - min) + min;
-}
 
 const MotionImage = motion(
   forwardRef(function MotionImage(
@@ -202,8 +200,6 @@ const MotionImage = motion(
   })
 );
 
-type Direction = "left" | "right";
-
 export const Photo = ({
   src,
   alt,
@@ -211,7 +207,8 @@ export const Photo = ({
   direction,
   width,
   height,
-  onClick,
+  tilt = 2,
+  onActivate,
   ...props
 }: {
   src: string;
@@ -220,38 +217,17 @@ export const Photo = ({
   direction?: Direction;
   width: number;
   height: number;
-  onClick?: () => void;
+  tilt?: number;
+  onActivate?: () => void;
 }) => {
-  const [rotation, setRotation] = useState<number>(0);
-  const x = useMotionValue(200);
-  const y = useMotionValue(200);
-
-  useEffect(() => {
-    const randomRotation =
-      getRandomNumberInRange(1, 4) * (direction === "left" ? -1 : 1);
-    setRotation(randomRotation);
-  }, [direction]);
-
-  function handleMouse(event: {
-    currentTarget: { getBoundingClientRect: () => any };
-    clientX: number;
-    clientY: number;
-  }) {
-    const rect = event.currentTarget.getBoundingClientRect();
-    x.set(event.clientX - rect.left);
-    y.set(event.clientY - rect.top);
-  }
-
-  const resetMouse = () => {
-    x.set(200);
-    y.set(200);
-  };
+  // Deterministic per-photo tilt (SSR-safe — no random, no effect).
+  const rotation = tilt * (direction === "left" ? -1 : 1);
 
   return (
     <motion.div
       drag
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-      whileTap={{ scale: 1.2, zIndex: 9999 }}
+      whileTap={{ scale: 1.12, zIndex: 9999 }}
       whileHover={{
         scale: 1.1,
         rotateZ: 2 * (direction === "left" ? -1 : 1),
@@ -267,30 +243,36 @@ export const Photo = ({
         width,
         height,
         perspective: 400,
-        transform: `rotate(0deg) rotateX(0deg) rotateY(0deg)`,
         zIndex: 1,
         WebkitTouchCallout: "none",
         WebkitUserSelect: "none",
         userSelect: "none",
-        touchAction: "none",
+        // pan-y keeps vertical page scroll working when a thumb lands here
+        touchAction: "pan-y",
       }}
       className={cn(
         className,
-        "relative mx-auto shrink-0 cursor-grab active:cursor-grabbing border-[6px] border-white dark:border-[#121215] shadow-xl"
+        "relative mx-auto shrink-0 cursor-grab active:cursor-grabbing border-[6px] border-white shadow-xl"
       )}
-      onMouseMove={handleMouse}
-      onMouseLeave={resetMouse}
-      onClick={onClick}
+      onClick={onActivate}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onActivate?.();
+        }
+      }}
+      role="button"
+      aria-label={alt}
       draggable={false}
       tabIndex={0}
     >
-      <div className="relative h-full w-full overflow-hidden shadow-sm bg-gray-100">
+      <div className="relative h-full w-full overflow-hidden shadow-sm bg-[#121215]">
         <MotionImage
           className={cn("object-cover")}
           fill
           src={src}
-          alt={alt}
           {...props}
+          alt=""
           draggable={false}
           sizes={`${width}px`}
         />

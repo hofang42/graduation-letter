@@ -1,20 +1,29 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer, staggerItem, viewportOnce } from '@/lib/animations'
 import { Calendar, Clock, ChevronDown } from 'lucide-react'
+import Image from 'next/image'
 import { useLanguage } from '@/lib/language-context'
 import { Magnetic } from '@/components/ui/magnetic'
-
+import { Countdown } from '@/components/ui/countdown'
+import { ChapterEyebrow } from '@/components/ui/section-heading'
+import { useGuestName } from '@/lib/guest'
+import { scrollToId } from '@/lib/lenis'
 
 export function Hero() {
-  const prefersReduced = useReducedMotion()
   const { t } = useLanguage()
+  const guest = useGuestName()
+
+  const goTo = (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault()
+    scrollToId(id)
+  }
 
   return (
     <section
       id="hero"
-      className="relative w-full py-16 md:py-24 overflow-hidden snap-start min-h-[100dvh] flex flex-col justify-center"
+      className="relative w-full py-16 md:py-24 overflow-hidden min-h-[100dvh] flex flex-col justify-center"
       style={{ background: '#0A0A0C' }}
     >
       {/* Film grain */}
@@ -41,19 +50,20 @@ export function Hero() {
         <motion.div variants={staggerItem} className="flex justify-center mb-8">
           <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full p-1 shadow-[0_0_30px_rgba(220,165,67,0.2)]" style={{ background: 'linear-gradient(135deg, rgba(220,165,67,0.4), transparent)' }}>
             <div className="w-full h-full rounded-full overflow-hidden bg-[#0A0A0C] border-2 border-[rgba(220,165,67,0.3)]">
-              <img src="/assets/logo.png" alt="Logo" className="w-full h-full object-cover" />
+              <Image
+                src="/assets/logo.png"
+                alt=""
+                width={128}
+                height={128}
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         </motion.div>
 
         {/* Eyebrow */}
         <motion.div variants={staggerItem} className="mb-4">
-          <span
-            className="inline-block text-[11px] font-medium uppercase tracking-[0.25em]"
-            style={{ color: '#DCA543' }}
-          >
-            {t('01. Thư Mời', '01. Invitation')}
-          </span>
+          <ChapterEyebrow chapterId="hero" />
         </motion.div>
 
         {/* Decorative line */}
@@ -69,7 +79,7 @@ export function Hero() {
         >
           {t('Trân trọng kính mời', 'We cordially invite')}
           {' '}
-          <span style={{ color: '#DCA543' }}>{t('Bạn', 'You')}</span>
+          <span style={{ color: '#DCA543' }}>{guest ?? t('Bạn', 'You')}</span>
         </motion.p>
 
         <motion.p
@@ -81,9 +91,9 @@ export function Hero() {
         </motion.p>
 
         {/* Graduate name — massive display */}
-        <motion.h1
+        <motion.h2
           variants={fadeUp}
-          className="font-[family-name:var(--font-playfair)] font-light uppercase leading-[1.1] mb-4"
+          className="font-[family-name:var(--font-playfair)] font-normal uppercase leading-[1.1] mb-4"
           style={{
             fontSize: 'clamp(2.5rem, 6vw, 5rem)',
             letterSpacing: '0.08em',
@@ -92,7 +102,7 @@ export function Hero() {
         >
           PHAN LÊ<br />
           THANH HOÀNG
-        </motion.h1>
+        </motion.h2>
 
         {/* Degree */}
         <motion.p
@@ -127,8 +137,8 @@ export function Hero() {
           }}
         >
           {t(
-            '\u201CBốn năm. Một hành trình. Khoảnh khắc thay đổi mọi thứ.\u201D',
-            '\u201CFour years. One journey. A moment that changes everything.\u201D'
+            '“Bốn năm. Một hành trình. Khoảnh khắc thay đổi mọi thứ.”',
+            '“Four years. One journey. A moment that changes everything.”'
           )}
         </motion.p>
 
@@ -145,9 +155,9 @@ export function Hero() {
             }}
           >
             <Calendar size={16} style={{ color: '#DCA543' }} />
-            <div>
-              <p className="text-xs uppercase tracking-widest" style={{ color: '#A0A0A8' }}>{t('Ngày', 'Date')}</p>
-              <p className="text-sm font-medium text-white">{t('Tháng 8, 2026', 'August 2026')}</p>
+            <div className="text-left">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em]" style={{ color: '#A0A0A8' }}>{t('Ngày', 'Date')}</p>
+              <p className="text-sm font-medium text-white">{t('Tháng 8, 2026 (dự kiến)', 'August 2026 (TBA)')}</p>
             </div>
           </div>
           <div
@@ -158,11 +168,16 @@ export function Hero() {
             }}
           >
             <Clock size={16} style={{ color: '#DCA543' }} />
-            <div>
-              <p className="text-xs uppercase tracking-widest" style={{ color: '#A0A0A8' }}>{t('Giờ', 'Time')}</p>
-              <p className="text-sm font-medium text-white">9:00 AM</p>
+            <div className="text-left">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em]" style={{ color: '#A0A0A8' }}>{t('Giờ', 'Time')}</p>
+              <p className="text-sm font-medium text-white">{t('09:00 sáng', '9:00 AM')}</p>
             </div>
           </div>
+        </motion.div>
+
+        {/* Countdown */}
+        <motion.div variants={staggerItem} className="mb-10">
+          <Countdown />
         </motion.div>
 
         {/* CTA buttons */}
@@ -170,6 +185,7 @@ export function Hero() {
           <Magnetic strength={40}>
             <a
               href="#rsvp"
+              onClick={goTo('rsvp')}
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-[#0A0A0C] font-semibold text-base transition-all duration-300 hover:scale-105"
               style={{
                 background: 'linear-gradient(135deg, #DCA543, #E8C373)',
@@ -183,6 +199,7 @@ export function Hero() {
           <Magnetic strength={20}>
             <a
               href="#journey"
+              onClick={goTo('journey')}
               className="inline-flex items-center gap-2 px-6 py-4 rounded-full font-medium text-base transition-all duration-300 hover:text-white"
               style={{
                 color: '#A0A0A8',
