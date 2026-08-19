@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Playfair_Display, Outfit, Dancing_Script, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { CustomCursor } from "@/components/ui/custom-cursor";
@@ -69,6 +70,14 @@ export default function RootLayout({
       lang="vi"
       className={`${playfair.variable} ${outfit.variable} ${dancingScript.variable} ${plexMono.variable} antialiased`}
     >
+      <head>
+        <Script
+          type="module"
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token":"a884bd4325d545e08dc22649c0369ad1"}'
+          strategy="afterInteractive"
+        />
+      </head>
       {/* suppressHydrationWarning: browser extensions (adblock/VPN) inject
           attributes like bis_register into <body> before React hydrates —
           harmless, but React logs a mismatch warning without this. Only
