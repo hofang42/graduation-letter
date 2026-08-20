@@ -34,16 +34,16 @@ function HomeContent({ isRevealed }: { isRevealed: boolean }) {
 
   const parallaxImages = [
     {
-      src: '/assets/AnhKyYeu/TaiAnh-07859.jpg',
-      alt: 'Portrait of Phan Le Thanh Hoang holding graduation folders',
+      src: '/assets/AnhKyYeu/TaiAnh-07897.jpg',
+      alt: 'Graduate reaching toward a flying graduation cap',
     },
     {
       src: '/assets/AnhKyYeu/DSC03617.jpg',
       alt: 'Five graduates sharing a joyful moment in the auditorium',
     },
     {
-      src: '/assets/AnhKyYeu/TaiAnh-07897.jpg',
-      alt: 'Graduate reaching toward a flying graduation cap',
+      src: '/assets/AnhKyYeu/TaiAnh-07859.jpg',
+      alt: 'Portrait of Phan Le Thanh Hoang holding graduation folders',
     },
     {
       src: '/assets/AnhKyYeu/TaiAnh-07903.jpg',
