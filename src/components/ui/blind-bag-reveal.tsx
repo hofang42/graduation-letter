@@ -12,6 +12,7 @@ import confetti from 'canvas-confetti'
 import { ArrowRight, Calendar, Clock, MapPin, Sparkles, Ticket } from 'lucide-react'
 import Image from 'next/image'
 import { useLanguage } from '@/lib/language-context'
+import { EVENT } from '@/lib/event'
 
 const confettiColors = ['#DCA543', '#E8C373', '#FFFFFF', '#A0A0A8']
 
@@ -51,17 +52,17 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
     {
       icon: Calendar,
       label: t('Ngày', 'Date'),
-      value: t('08/2026', 'Aug 2026'),
+      value: t(EVENT.dateVi, EVENT.dateEn),
     },
     {
       icon: Clock,
       label: t('Giờ', 'Time'),
-      value: '09:00',
+      value: EVENT.timeVi,
     },
     {
       icon: MapPin,
       label: t('Địa điểm', 'Venue'),
-      value: 'FPTU DN',
+      value: t('Đại học FPT Đà Nẵng', 'FPT University Da Nang'),
     },
   ]
 

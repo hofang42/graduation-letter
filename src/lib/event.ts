@@ -1,16 +1,19 @@
 // Single source of truth for the ceremony details.
-// When the official date is announced, update EVENT here — every card,
+// Keep the official ceremony details in one place — every card,
 // countdown, calendar file, and map link reads from this object.
 
 export const EVENT = {
-  // Provisional — the university has not announced the exact date yet.
-  dateConfirmed: false,
-  start: new Date('2026-08-15T09:00:00+07:00'),
-  end: new Date('2026-08-15T12:00:00+07:00'),
+  dateConfirmed: true,
+  start: new Date('2026-09-12T06:30:00+07:00'),
+  end: new Date('2026-09-12T17:00:00+07:00'),
+  dateVi: 'Ngày 12 tháng 9, 2026',
+  dateEn: 'September 12, 2026',
+  timeVi: '06:30 sáng',
+  timeEn: '6:30 AM',
   titleVi: 'Lễ Tốt Nghiệp — Phan Lê Thanh Hoàng',
   titleEn: 'Graduation Ceremony — Phan Le Thanh Hoang',
-  venue: 'FPT University Da Nang',
-  addressVi: 'Đại học FPT Đà Nẵng, Khu Công nghệ cao, Ngũ Hành Sơn, Đà Nẵng',
+  venue: 'Trường Đại học FPT Đà Nẵng',
+  addressVi: 'Trường Đại học FPT Đà Nẵng, Khu Công nghệ cao, Ngũ Hành Sơn, Đà Nẵng',
   addressEn: 'FPT University Da Nang, Khu Cong nghe cao, Ngu Hanh Son, Da Nang, Vietnam',
   mapsUrl: 'https://maps.google.com/?q=FPT+University+Da+Nang',
   coords: '15.9686° N · 108.2604° E',
@@ -25,8 +28,8 @@ export function buildICS(lang: 'vi' | 'en'): string {
   const address = lang === 'vi' ? EVENT.addressVi : EVENT.addressEn
   const note =
     lang === 'vi'
-      ? 'Thời gian dự kiến — sẽ cập nhật khi có lịch chính thức.'
-      : 'Provisional time — will be updated once the official schedule is announced.'
+      ? `Lễ tốt nghiệp diễn ra lúc ${EVENT.timeVi}, ngày ${EVENT.dateVi}.`
+      : `The graduation ceremony begins at ${EVENT.timeEn} on ${EVENT.dateEn}.`
 
   return [
     'BEGIN:VCALENDAR',

@@ -9,6 +9,7 @@ import { Magnetic } from '@/components/ui/magnetic'
 import { Countdown } from '@/components/ui/countdown'
 import { ChapterEyebrow } from '@/components/ui/section-heading'
 import { useGuestName } from '@/lib/guest'
+import { EVENT } from '@/lib/event'
 import { scrollToId } from '@/lib/lenis'
 
 export function Hero() {
@@ -157,7 +158,7 @@ export function Hero() {
             <Calendar size={16} style={{ color: '#DCA543' }} />
             <div className="text-left">
               <p className="font-mono text-[10px] uppercase tracking-[0.2em]" style={{ color: '#A0A0A8' }}>{t('Ngày', 'Date')}</p>
-              <p className="text-sm font-medium text-white">{t('Tháng 8, 2026 (dự kiến)', 'August 2026 (TBA)')}</p>
+              <p className="text-sm font-medium text-white">{t(EVENT.dateVi, EVENT.dateEn)}</p>
             </div>
           </div>
           <div
@@ -170,7 +171,7 @@ export function Hero() {
             <Clock size={16} style={{ color: '#DCA543' }} />
             <div className="text-left">
               <p className="font-mono text-[10px] uppercase tracking-[0.2em]" style={{ color: '#A0A0A8' }}>{t('Giờ', 'Time')}</p>
-              <p className="text-sm font-medium text-white">{t('09:00 sáng', '9:00 AM')}</p>
+              <p className="text-sm font-medium text-white">{t(EVENT.timeVi, EVENT.timeEn)}</p>
             </div>
           </div>
         </motion.div>

@@ -8,7 +8,7 @@ import { SectionHeading } from '@/components/ui/section-heading'
 
 const events = [
   {
-    time: '09:00',
+    time: '05:30',
     titleVi: 'Đón tiếp & Chào mừng',
     titleEn: 'Arrival & Welcome',
     descVi: 'Check-in và nhận chỗ ngồi',
@@ -18,7 +18,7 @@ const events = [
     active: false,
   },
   {
-    time: '10:00',
+    time: '06:30',
     titleVi: 'Lễ tốt nghiệp',
     titleEn: 'Graduation Ceremony',
     descVi: 'Nghi thức trao bằng chính thức',
@@ -28,7 +28,7 @@ const events = [
     active: true,
   },
   {
-    time: '12:00',
+    time: '08:30',
     titleVi: 'Chụp ảnh lưu niệm',
     titleEn: 'Photography Session',
     descVi: 'Lưu giữ khoảnh khắc đáng nhớ',
@@ -38,7 +38,7 @@ const events = [
     active: false,
   },
   {
-    time: '13:30',
+    time: '10:00',
     titleVi: 'Tiệc trưa & Giao lưu',
     titleEn: 'Lunch & Reception',
     descVi: 'Thưởng thức bữa trưa cùng mọi người',
@@ -48,7 +48,7 @@ const events = [
     active: false,
   },
   {
-    time: '18:00',
+    time: '14:30',
     titleVi: 'Tiệc mừng tối',
     titleEn: 'Celebration Dinner',
     descVi: 'Bữa tiệc ấm cúng buổi tối',
@@ -58,7 +58,7 @@ const events = [
     active: false,
   },
   {
-    time: '20:30',
+    time: '17:00',
     titleVi: 'Lời cảm ơn & Kết thúc',
     titleEn: 'Closing Toast',
     descVi: 'Nâng ly và khép lại một ngày đáng nhớ',
