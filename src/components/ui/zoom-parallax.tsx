@@ -52,7 +52,7 @@ export function ZoomParallax({ images }: ZoomParallaxProps) {
 									fill
 									sizes="(max-width: 768px) 90vw, 60vw"
 									loading={index === 0 ? 'eager' : 'lazy'}
-									className="object-cover"
+									className="bg-[#121215] object-contain"
 								/>
 							</div>
 						</motion.div>

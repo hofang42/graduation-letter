@@ -84,6 +84,30 @@ const photos: GalleryPhoto[] = [
     width: 3845,
     height: 5768,
   },
+  {
+    src: '/assets/AnhKyYeu/DSC03637.jpg',
+    alt: 'Five graduates posing playfully together in the auditorium',
+    captionVi: 'Một khoảnh khắc không thể đứng yên',
+    captionEn: 'A moment that could not stay still',
+    width: 1667,
+    height: 2500,
+  },
+  {
+    src: '/assets/AnhKyYeu/DSC03698.jpg',
+    alt: 'Graduate seated among the auditorium seats in a thoughtful pose',
+    captionVi: 'Một khoảng lặng giữa ngày vui',
+    captionEn: 'A quiet pause inside a joyful day',
+    width: 2500,
+    height: 1667,
+  },
+  {
+    src: '/assets/AnhKyYeu/DSC03701.jpg',
+    alt: 'Graduate holding an open graduation certificate folder in the auditorium',
+    captionVi: 'Khoảnh khắc cầm trên tay thành quả',
+    captionEn: 'Holding the result of the journey',
+    width: 2500,
+    height: 1667,
+  },
 ]
 
 export function Memories() {

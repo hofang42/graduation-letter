@@ -525,7 +525,7 @@ const Lightbox = ({
                 alt=""
                 fill
                 sizes="64px"
-                className="object-cover"
+                className="bg-[#121215] object-contain"
               />
             </button>
           ))}
@@ -607,7 +607,7 @@ export const Photo = ({
     >
       <div className="relative h-full w-full overflow-hidden bg-[#121215] shadow-sm">
         <MotionImage
-          className="object-cover"
+          className="bg-[#121215] object-contain"
           fill
           src={src}
           {...props}
