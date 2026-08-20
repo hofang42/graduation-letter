@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/language-context";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface GalleryPhoto {
   src: string;
@@ -33,6 +34,14 @@ export const PhotoGallery = ({
   const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [batchStart, setBatchStart] = useState(0);
+  const batchSize = 5;
+  const batchCount = Math.max(1, Math.ceil(photos.length / batchSize));
+  const batchEnd = Math.min(batchStart + batchSize, photos.length);
+  const visiblePhotos = useMemo(
+    () => photos.slice(batchStart, batchEnd),
+    [photos, batchStart, batchEnd]
+  );
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -97,7 +106,7 @@ export const PhotoGallery = ({
 
   const initialState = useMemo(
     () =>
-      photos.slice(0, 5).map((photo, i) => ({
+      visiblePhotos.map((photo, i) => ({
         ...photo,
         id: i + 1,
         order: i,
@@ -105,10 +114,14 @@ export const PhotoGallery = ({
         zIndex: 50 - i * 10,
         direction: DIRECTIONS[i],
       })),
-    [photos]
+    [visiblePhotos]
   );
 
   const [photosState, setPhotosState] = useState(initialState);
+
+  useEffect(() => {
+    setPhotosState(initialState);
+  }, [initialState]);
 
   const sendToBack = (id: number) => {
     setPhotosState((prev) => {
@@ -186,6 +199,37 @@ export const PhotoGallery = ({
         <p className="text-[10px] uppercase tracking-[0.2em] text-[#A0A0A8]">
           {t('Chạm hoặc kéo ảnh để xem tấm kế tiếp', 'Tap or drag a photo to see the next one')}
         </p>
+        {batchCount > 1 && (
+          <div className="mt-3 flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() =>
+                setBatchStart((current) =>
+                  current === 0 ? (batchCount - 1) * batchSize : current - batchSize
+                )
+              }
+              className="rounded-full border border-white/15 p-2 text-[#E8C373] transition hover:border-[#DCA543] hover:bg-white/5 disabled:opacity-40"
+              aria-label={t('Xem nhóm ảnh trước', 'View previous photo set')}
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <span className="min-w-[7rem] text-center font-mono text-[10px] uppercase tracking-[0.16em] text-[#A0A0A8]">
+              {t(`Ảnh ${batchStart + 1}–${batchEnd} / ${photos.length}`, `Photos ${batchStart + 1}–${batchEnd} / ${photos.length}`)}
+            </span>
+            <button
+              type="button"
+              onClick={() =>
+                setBatchStart((current) =>
+                  current + batchSize >= photos.length ? 0 : current + batchSize
+                )
+              }
+              className="rounded-full border border-white/15 p-2 text-[#E8C373] transition hover:border-[#DCA543] hover:bg-white/5 disabled:opacity-40"
+              aria-label={t('Xem nhóm ảnh tiếp theo', 'View next photo set')}
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

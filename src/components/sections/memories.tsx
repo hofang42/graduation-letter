@@ -4,38 +4,50 @@ import { useLanguage } from '@/lib/language-context'
 import { PhotoGallery, GalleryPhoto } from '@/components/ui/gallery'
 import { SectionHeading } from '@/components/ui/section-heading'
 
-// Single source of truth for the memory photos — the gallery renders
-// these with their captions. Swap in real photos here.
+// Curated memory photos: repeated poses are represented once, while each batch
+// mixes solo portraits, group moments, and campus context.
 const photos: GalleryPhoto[] = [
   {
-    src: '/assets/AnhKyYeu/TaiAnh-07883.jpg',
-    alt: 'Phan Le Thanh Hoang smiling in his graduation gown while holding a folder',
-    captionVi: 'Nụ cười ngày tốt nghiệp',
-    captionEn: 'A graduation-day smile',
+    src: '/assets/AnhKyYeu/DSC03621.jpg',
+    alt: 'Five graduates making playful poses together in the auditorium',
+    captionVi: 'Một khung hình đầy tiếng cười',
+    captionEn: 'A frame full of laughter',
   },
   {
-    src: '/assets/AnhKyYeu/DSC03617.jpg',
-    alt: 'Five graduates laughing together in the auditorium',
-    captionVi: 'Bạn bè cùng một khung hình',
-    captionEn: 'Friends in one frame',
+    src: '/assets/AnhKyYeu/B0ops-16 (1).jpg',
+    alt: 'Graduate seated in a classroom and pointing playfully toward the camera',
+    captionVi: 'Một khoảnh khắc rất riêng',
+    captionEn: 'A moment all his own',
   },
   {
-    src: '/assets/AnhKyYeu/TaiAnh-07903.jpg',
-    alt: 'Graduate seated and smiling behind an orange graduation folder',
-    captionVi: 'Một chương mới bắt đầu',
-    captionEn: 'A new chapter begins',
+    src: '/assets/AnhKyYeu/B0ops-55 (1).jpg',
+    alt: 'Graduates posing together in a classroom in their black gowns',
+    captionVi: 'Cùng nhau đi qua một chặng đường',
+    captionEn: 'Together through the journey',
   },
   {
-    src: '/assets/AnhKyYeu/DSC03624.jpg',
-    alt: 'Five graduates posing together among the auditorium seats',
-    captionVi: 'Khoảnh khắc của cả nhóm',
-    captionEn: 'The whole crew',
+    src: '/assets/AnhKyYeu/B0ops-57 (1).jpg',
+    alt: 'Graduates gathered together along the campus corridor',
+    captionVi: 'Những người bạn đồng hành',
+    captionEn: 'The people who shared the journey',
   },
   {
-    src: '/assets/AnhKyYeu/DSC03611.jpg',
-    alt: 'Five graduates relaxing together in the auditorium',
-    captionVi: 'Những ngày tháng đáng nhớ',
-    captionEn: 'The days to remember',
+    src: '/assets/AnhKyYeu/B0ops-59 (1).jpg',
+    alt: 'Graduates posing together on the upper campus balcony',
+    captionVi: 'Một góc nhìn khác của ngày vui',
+    captionEn: 'Another view of the celebration',
+  },
+  {
+    src: '/assets/AnhKyYeu/Bản sao của PhuTrong (24 of 69).jpg',
+    alt: 'FPT University Da Nang campus sign surrounded by greenery',
+    captionVi: 'Nơi lưu giữ thanh xuân',
+    captionEn: 'The place that held our youth',
+  },
+  {
+    src: '/assets/AnhKyYeu/Bản sao của PhuTrong (26 of 69).jpg',
+    alt: 'Graduates gathered outside the FPT University Da Nang campus building',
+    captionVi: 'Thanh xuân dưới mái trường',
+    captionEn: 'Youth beneath the campus roof',
   },
 ]
 
