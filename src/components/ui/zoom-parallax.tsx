@@ -14,25 +14,18 @@ interface ZoomParallaxProps {
   images: ParallaxImage[]
 }
 
+// Every slot has its own lane. The mobile map uses three columns and three rows;
+// the desktop map keeps the same reading order with larger, calmer frames.
 const layoutClasses = [
-  // Flying-cap hero: portrait frame centered above the collage.
-  'left-1/2 top-[11vh] w-[30vw] aspect-[2/3] -translate-x-1/2 md:top-[12vh] md:w-[18vw]',
-  // Main horizontal group: wide and centered at the top.
-  'left-1/2 top-[2vh] w-[78vw] aspect-[3/2] -translate-x-1/2 md:top-[4vh] md:w-[38vw]',
-  // Folder group portrait.
-  'left-[3vw] top-[23vh] w-[34vw] aspect-[2/3] md:left-[8vw] md:top-[18vh] md:w-[19vw]',
-  // Seated folder portrait.
-  'right-[3vw] top-[23vh] w-[34vw] aspect-[2/3] md:right-[8vw] md:top-[19vh] md:w-[19vw]',
-  // Standing folder portrait in the lower-left cluster.
-  'left-[4vw] top-[58vh] w-[33vw] aspect-[2/3] md:left-[14vw] md:top-[55vh] md:w-[18vw]',
-  // Existing lower horizontal group.
-  'left-1/2 top-[58vh] w-[72vw] aspect-[3/2] -translate-x-1/2 md:top-[57vh] md:w-[32vw]',
-  // Existing lower-right wide group.
-  'right-[2vw] top-[63vh] w-[46vw] aspect-[3/2] md:right-[10vw] md:top-[59vh] md:w-[28vw]',
-  // Added horizontal group to fill the middle-left gap.
-  'left-[2vw] top-[48vh] w-[46vw] aspect-[3/2] md:left-[2vw] md:top-[39vh] md:w-[29vw]',
-  // Added horizontal close-up to fill the middle-right gap.
-  'right-[2vw] top-[48vh] w-[46vw] aspect-[3/2] md:right-[2vw] md:top-[39vh] md:w-[29vw]',
+  'left-[2vw] top-[4vh] w-[30vw] aspect-[2/3] md:left-[3vw] md:top-[8vh] md:w-[16vw]',
+  'left-[35vw] top-[4vh] w-[30vw] aspect-[3/2] md:left-[23vw] md:top-[8vh] md:w-[32vw]',
+  'left-[68vw] top-[4vh] w-[30vw] aspect-[2/3] md:left-[73vw] md:top-[8vh] md:w-[16vw]',
+  'left-[2vw] top-[28vh] w-[30vw] aspect-[3/2] md:left-[3vw] md:top-[38vh] md:w-[28vw]',
+  'left-[35vw] top-[28vh] w-[30vw] aspect-[2/3] md:left-[36vw] md:top-[38vh] md:w-[16vw]',
+  'left-[68vw] top-[28vh] w-[30vw] aspect-[3/2] md:left-[60vw] md:top-[38vh] md:w-[28vw]',
+  'left-[2vw] top-[52vh] w-[30vw] aspect-[2/3] md:left-[3vw] md:top-[69vh] md:w-[16vw]',
+  'left-[35vw] top-[52vh] w-[30vw] aspect-[3/2] md:left-[25vw] md:top-[69vh] md:w-[28vw]',
+  'left-[68vw] top-[52vh] w-[30vw] aspect-[3/2] md:left-[60vw] md:top-[69vh] md:w-[28vw]',
 ]
 
 export function ZoomParallax({ images }: ZoomParallaxProps) {
@@ -43,33 +36,28 @@ export function ZoomParallax({ images }: ZoomParallaxProps) {
     offset: ['start start', 'end end'],
   })
 
-  const scale4 = useTransform(scrollYProgress, [0, 1], [1, 4])
-  const scale5 = useTransform(scrollYProgress, [0, 1], [1, 5])
-  const scale6 = useTransform(scrollYProgress, [0, 1], [1, 6])
-  const scale8 = useTransform(scrollYProgress, [0, 1], [1, 8])
-  const scale9 = useTransform(scrollYProgress, [0, 1], [1, 9])
-
-  const scales = [scale4, scale5, scale6, scale5, scale6, scale8, scale9, scale5, scale6]
+  // Keep the cinematic movement subtle enough that one image never expands over
+  // the next lane and obscures its face or caption.
+  const gentleZoom = useTransform(scrollYProgress, [0, 1], [1, 1.08])
 
   return (
     <div ref={container} className="relative h-[100dvh] motion-safe:h-[300vh]">
       <div className="sticky top-0 h-[100dvh] overflow-hidden bg-[#0A0A0C]">
         {images.map(({ src, alt }, index) => {
-          const scale = scales[index % scales.length]
           const layout = layoutClasses[index % layoutClasses.length]
 
           return (
             <motion.div
               key={`${src}-${index}`}
-              style={prefersReduced ? undefined : { scale }}
-              className="absolute inset-0"
+              style={prefersReduced ? undefined : { scale: gentleZoom, zIndex: 10 + index }}
+              className="absolute inset-0 pointer-events-none"
             >
               <div className={`absolute ${layout}`}>
                 <Image
                   src={src || '/placeholder.svg'}
                   alt={alt || `Parallax image ${index + 1}`}
                   fill
-                  sizes="(max-width: 768px) 78vw, 40vw"
+                  sizes="(max-width: 768px) 30vw, 32vw"
                   loading={index === 0 ? 'eager' : 'lazy'}
                   className="object-contain"
                 />
