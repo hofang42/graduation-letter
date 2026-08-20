@@ -343,3 +343,30 @@ input, textarea, select, button, a, [data-cursor="pointer"] {
 input[type="submit"], button, a, [data-cursor="pointer"] {
   cursor: pointer;
 }
+
+/* ===== Production Copy Protection ===== */
+html.production-copy-protected,
+html.production-copy-protected body,
+html.production-copy-protected body * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html.production-copy-protected img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+html.production-copy-protected input,
+html.production-copy-protected textarea,
+html.production-copy-protected select,
+html.production-copy-protected [contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+@media print {
+  html.production-copy-protected body {
+    display: none;
+  }
+}

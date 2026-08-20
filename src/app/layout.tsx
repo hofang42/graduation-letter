@@ -4,6 +4,7 @@ import { Playfair_Display, Outfit, Dancing_Script, IBM_Plex_Mono } from "next/fo
 import "./globals.css";
 import { CustomCursor } from "@/components/ui/custom-cursor";
 import { FloatingElements } from "@/components/ui/floating-elements";
+import { ProductionCopyGuard } from "@/components/ui/production-copy-guard";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -86,6 +87,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-screen bg-[#0A0A0C] text-white overflow-x-clip w-full"
       >
+        <ProductionCopyGuard />
         <FloatingElements />
         <a href="#main-content" className="skip-to-content">
           Skip to main content
