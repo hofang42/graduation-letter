@@ -4,8 +4,29 @@ import { useLanguage } from '@/lib/language-context'
 import { PhotoGallery, GalleryPhoto } from '@/components/ui/gallery'
 import { SectionHeading } from '@/components/ui/section-heading'
 
-// Curated memory photos: repeated poses are represented once, while each batch
-// mixes solo portraits, group moments, and campus context.
+// The teaser uses a separate set from the album so each photo appears only once on the page.
+const teaserPhotos: GalleryPhoto[] = [
+  {
+    src: '/assets/AnhKyYeu/DSC03614.jpg',
+    alt: 'Graduates gathered in the auditorium before the ceremony',
+    captionVi: 'Trước giờ phút đáng nhớ',
+    captionEn: 'Before the moment we will remember',
+  },
+  {
+    src: '/assets/AnhKyYeu/DSC03619.jpg',
+    alt: 'Graduates celebrating together in the auditorium',
+    captionVi: 'Niềm vui được sẻ chia',
+    captionEn: 'Joy is better when shared',
+  },
+  {
+    src: '/assets/AnhKyYeu/DSC03611.jpg',
+    alt: 'Graduates seated together during the graduation day',
+    captionVi: 'Một ngày của chúng ta',
+    captionEn: 'A day that belongs to us',
+  },
+]
+
+// The album keeps one representative from repeated poses and never reuses a parallax photo.
 const photos: GalleryPhoto[] = [
   {
     src: '/assets/AnhKyYeu/DSC03621.jpg',
@@ -55,15 +76,15 @@ export function Memories() {
   const { t } = useLanguage()
 
   return (
-    <section id="memories" className="relative py-12 md:py-16 overflow-hidden min-h-[100dvh]">
+    <section id="memories" className="relative min-h-[100dvh] overflow-hidden py-12 md:py-16">
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="pointer-events-none absolute inset-0"
         style={{
           background: 'linear-gradient(180deg, #0A0A0C 0%, #0E0E11 50%, #0A0A0C 100%)',
         }}
       />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12">
         <SectionHeading
           chapterId="memories"
           title={t('Những Khoảnh Khắc Đáng Nhớ', 'Moments That Made It')}
@@ -72,7 +93,7 @@ export function Memories() {
           }
         />
 
-        <PhotoGallery photos={photos} />
+        <PhotoGallery photos={photos} teaserPhotos={teaserPhotos} />
       </div>
     </section>
   )
