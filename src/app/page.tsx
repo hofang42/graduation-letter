@@ -61,6 +61,14 @@ function HomeContent({ isRevealed }: { isRevealed: boolean }) {
       src: '/assets/AnhKyYeu/DSC03629.jpg',
       alt: 'Wide-angle group portrait of five graduates in the auditorium',
     },
+    {
+      src: '/assets/AnhKyYeu/DSC03639.jpg',
+      alt: 'Five graduates making a heart gesture together in the auditorium',
+    },
+    {
+      src: '/assets/AnhKyYeu/DSC03688.jpg',
+      alt: 'Graduate playfully lifting the gown toward his face in the auditorium',
+    },
   ]
 
   const containerVariants = {
