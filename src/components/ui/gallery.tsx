@@ -13,6 +13,7 @@ export interface GalleryPhoto {
   alt: string
   captionVi: string
   captionEn: string
+  frame?: "portrait" | "landscape" | "wide"
 }
 
 type Direction = "left" | "right"
@@ -29,15 +30,18 @@ const DESKTOP_X = ["-150px", "-75px", "0px", "75px", "150px"]
 const MOBILE_X = ["-30px", "-15px", "0px", "15px", "30px"]
 const OFFSET_Y = ["15px", "32px", "8px", "22px", "44px"]
 const DIRECTIONS: Direction[] = ["left", "left", "right", "right", "left"]
-const TILE_RATIOS = [
-  "aspect-[4/5]",
-  "aspect-[4/3]",
-  "aspect-[3/4]",
-  "aspect-[4/5]",
-  "aspect-[5/4]",
-  "aspect-[3/4]",
-  "aspect-[4/3]",
-]
+const getFrameClass = (
+  frame: GalleryPhoto["frame"],
+  isMobile: boolean
+) => {
+  if (isMobile) {
+    return frame === "portrait" ? "aspect-[4/5]" : "aspect-[4/3]"
+  }
+
+  if (frame === "portrait") return "aspect-[3/4]"
+  if (frame === "wide") return "aspect-[16/10]"
+  return "aspect-[4/3]"
+}
 
 export const PhotoGallery = ({
   photos,
@@ -269,6 +273,7 @@ export const PhotoGallery = ({
             {lightboxIndex === null ? (
               <AlbumOverview
                 photos={albumPhotos}
+                isMobile={isMobile}
                 t={t}
                 onClose={closeAlbum}
                 onOpenPhoto={setLightboxIndex}
@@ -277,6 +282,7 @@ export const PhotoGallery = ({
               <Lightbox
                 photos={albumPhotos}
                 index={lightboxIndex}
+                isMobile={isMobile}
                 t={t}
                 onClose={() => setLightboxIndex(null)}
                 onNext={showNext}
@@ -293,16 +299,18 @@ export const PhotoGallery = ({
 
 const AlbumOverview = ({
   photos,
+  isMobile,
   t,
   onClose,
   onOpenPhoto,
 }: {
   photos: GalleryPhoto[]
+  isMobile: boolean
   t: (vi: string, en: string) => string
   onClose: () => void
   onOpenPhoto: (index: number) => void
 }) => (
-  <div className="mx-auto min-h-[100dvh] max-w-7xl px-5 py-6 md:px-10 md:py-10">
+  <div className="mx-auto min-h-full max-w-7xl overscroll-y-contain px-5 py-6 pb-28 md:px-10 md:py-10 md:pb-32">
     <header className="mb-8 flex items-start justify-between gap-6 border-b border-white/10 pb-6 md:mb-12">
       <div>
         <p className="mb-3 text-[10px] uppercase tracking-[0.28em] text-[#E8C373]">
@@ -343,13 +351,13 @@ const AlbumOverview = ({
             className="group relative block w-full overflow-hidden rounded-sm border border-white/10 bg-[#121215] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C373]"
             aria-label={t(`Mở ảnh: ${photo.captionVi}`, `Open photo: ${photo.captionEn}`)}
           >
-            <div className={cn("relative w-full", TILE_RATIOS[index % TILE_RATIOS.length])}>
+            <div className={cn("relative w-full bg-[#121215] p-1 md:p-2", getFrameClass(photo.frame, isMobile))}>
               <Image
                 src={photo.src}
                 alt={photo.alt}
                 fill
                 sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 25vw"
-                className="object-cover transition duration-700 ease-out group-hover:scale-105"
+                className="object-contain transition duration-700 ease-out group-hover:scale-[1.02]"
                 loading={index < 4 ? "eager" : "lazy"}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-70 transition group-hover:opacity-90" />
@@ -373,6 +381,7 @@ const AlbumOverview = ({
 const Lightbox = ({
   photos,
   index,
+  isMobile,
   t,
   onClose,
   onNext,
@@ -381,6 +390,7 @@ const Lightbox = ({
 }: {
   photos: GalleryPhoto[]
   index: number
+  isMobile: boolean
   t: (vi: string, en: string) => string
   onClose: () => void
   onNext: () => void
@@ -391,7 +401,7 @@ const Lightbox = ({
   const touchStartX = useRef<number | null>(null)
 
   return (
-    <div className="min-h-[100dvh] px-4 py-5 md:px-8 md:py-8">
+    <div className="min-h-full overflow-y-auto px-4 py-5 pb-12 md:px-8 md:py-8">
       <header className="mx-auto flex max-w-7xl items-center justify-between gap-4 border-b border-white/10 pb-5">
         <button
           type="button"
@@ -440,7 +450,12 @@ const Lightbox = ({
           <AnimatePresence mode="wait">
             <motion.div
               key={photo.src}
-              className="relative h-full w-[78vw] max-w-5xl"
+              className={cn(
+                "relative",
+                isMobile
+                  ? "h-[58dvh] w-[92vw]"
+                  : "h-[68dvh] w-[min(82vw,1200px)]"
+              )}
               initial={{ opacity: 0, scale: 0.97, x: 16 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.97, x: -16 }}
@@ -452,7 +467,7 @@ const Lightbox = ({
                 fill
                 priority
                 sizes="(max-width: 767px) 78vw, 70vw"
-                className="object-contain"
+                className="object-contain p-1 md:p-3"
               />
             </motion.div>
           </AnimatePresence>
