@@ -2,27 +2,27 @@
 
 import { motion } from 'framer-motion'
 import { staggerContainer, staggerItem, viewportOnce } from '@/lib/animations'
-import { GraduationCap, Camera, Utensils, PartyPopper, Car, Wine } from 'lucide-react'
+import { GraduationCap, Camera, Car, Heart } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 import { SectionHeading } from '@/components/ui/section-heading'
 
 const events = [
   {
-    time: '05:30',
-    titleVi: 'Đón tiếp & Chào mừng',
-    titleEn: 'Arrival & Welcome',
-    descVi: 'Check-in và nhận chỗ ngồi',
-    descEn: 'Check-in and find your seat',
+    time: '06:30',
+    titleVi: 'Đón tiếp & Ổn định chỗ ngồi',
+    titleEn: 'Guest Check-in & Seating',
+    descVi: 'Đón khách, check-in và ổn định chỗ ngồi',
+    descEn: 'Guest check-in and seating',
     icon: Car,
     color: '#B8862E',
     active: false,
   },
   {
-    time: '06:30',
+    time: '07:00',
     titleVi: 'Lễ tốt nghiệp',
     titleEn: 'Graduation Ceremony',
-    descVi: 'Nghi thức trao bằng chính thức',
-    descEn: 'Official degree conferral ceremony',
+    descVi: 'Nghi thức trao bằng và chương trình chính thức',
+    descEn: 'Official ceremony and degree conferral',
     icon: GraduationCap,
     color: '#DCA543',
     active: true,
@@ -31,40 +31,20 @@ const events = [
     time: '08:30',
     titleVi: 'Chụp ảnh lưu niệm',
     titleEn: 'Photography Session',
-    descVi: 'Lưu giữ khoảnh khắc đáng nhớ',
-    descEn: 'Capture memorable moments',
+    descVi: 'Chụp ảnh cá nhân và ảnh nhóm cùng gia đình, bạn bè',
+    descEn: 'Individual and group photos with family and friends',
     icon: Camera,
     color: '#E8C373',
     active: false,
   },
   {
-    time: '10:00',
-    titleVi: 'Tiệc trưa & Giao lưu',
-    titleEn: 'Lunch & Reception',
-    descVi: 'Thưởng thức bữa trưa cùng mọi người',
-    descEn: 'Enjoy lunch with family and friends',
-    icon: Utensils,
-    color: '#DCA543',
-    active: false,
-  },
-  {
-    time: '14:30',
-    titleVi: 'Tiệc mừng tối',
-    titleEn: 'Celebration Dinner',
-    descVi: 'Bữa tiệc ấm cúng buổi tối',
-    descEn: 'An intimate evening celebration',
-    icon: PartyPopper,
-    color: '#B8862E',
-    active: false,
-  },
-  {
-    time: '17:00',
+    time: '09:30',
     titleVi: 'Lời cảm ơn & Kết thúc',
-    titleEn: 'Closing Toast',
-    descVi: 'Nâng ly và khép lại một ngày đáng nhớ',
-    descEn: 'Raise a glass to close an unforgettable day',
-    icon: Wine,
-    color: '#E8C373',
+    titleEn: 'Closing & Congratulations',
+    descVi: 'Gửi lời cảm ơn, chúc mừng và khép lại chương trình buổi sáng',
+    descEn: 'Final thanks and congratulations to close the morning program',
+    icon: Heart,
+    color: '#DCA543',
     active: false,
   },
 ]

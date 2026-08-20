@@ -5,7 +5,7 @@
 export const EVENT = {
   dateConfirmed: true,
   start: new Date('2026-09-12T06:30:00+07:00'),
-  end: new Date('2026-09-12T17:00:00+07:00'),
+  end: new Date('2026-09-12T10:00:00+07:00'),
   dateVi: 'Ngày 12 tháng 9, 2026',
   dateEn: 'September 12, 2026',
   timeVi: '06:30 sáng',
