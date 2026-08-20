@@ -34,32 +34,32 @@ function HomeContent({ isRevealed }: { isRevealed: boolean }) {
 
   const parallaxImages = [
     {
-      src: 'https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=1280',
-      alt: 'Graduation cap and diploma',
+      src: '/assets/AnhKyYeu/TaiAnh-07859.jpg',
+      alt: 'Portrait of Phan Le Thanh Hoang holding graduation folders',
     },
     {
-      src: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1280&h=720&fit=crop',
-      alt: 'University building',
+      src: '/assets/AnhKyYeu/DSC03617.jpg',
+      alt: 'Five graduates sharing a joyful moment in the auditorium',
     },
     {
-      src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=800&fit=crop',
-      alt: 'Students studying together',
+      src: '/assets/AnhKyYeu/TaiAnh-07897.jpg',
+      alt: 'Graduate reaching toward a flying graduation cap',
     },
     {
-      src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1280&h=720&fit=crop',
-      alt: 'Friends laughing on campus',
+      src: '/assets/AnhKyYeu/TaiAnh-07903.jpg',
+      alt: 'Graduate smiling while holding a graduation folder',
     },
     {
-      src: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=800&fit=crop',
-      alt: 'Late night studying',
+      src: '/assets/AnhKyYeu/TaiAnh-07883.jpg',
+      alt: 'Graduate smiling and pointing to his graduation folder',
     },
     {
-      src: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=1280&h=720&fit=crop',
-      alt: 'Cap toss',
+      src: '/assets/AnhKyYeu/DSC03624.jpg',
+      alt: 'Five graduates posing together among auditorium seats',
     },
     {
-      src: 'https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=1280&h=720&fit=crop',
-      alt: 'Celebration',
+      src: '/assets/AnhKyYeu/DSC03629.jpg',
+      alt: 'Wide-angle group portrait of five graduates in the auditorium',
     },
   ]
 
