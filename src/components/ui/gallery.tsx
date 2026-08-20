@@ -90,10 +90,29 @@ export const PhotoGallery = ({
 
   useEffect(() => {
     if (!isAlbumOpen) return
-    const originalOverflow = document.body.style.overflow
-    document.body.style.overflow = "hidden"
+
+    const scrollY = window.scrollY
+    const html = document.documentElement
+    const body = document.body
+    const originalHtmlOverflow = html.style.overflow
+    const originalBodyOverflow = body.style.overflow
+    const originalBodyPosition = body.style.position
+    const originalBodyTop = body.style.top
+    const originalBodyWidth = body.style.width
+
+    html.style.overflow = "hidden"
+    body.style.position = "fixed"
+    body.style.top = `-${scrollY}px`
+    body.style.width = "100%"
+    body.style.overflow = "hidden"
+
     return () => {
-      document.body.style.overflow = originalOverflow
+      html.style.overflow = originalHtmlOverflow
+      body.style.overflow = originalBodyOverflow
+      body.style.position = originalBodyPosition
+      body.style.top = originalBodyTop
+      body.style.width = originalBodyWidth
+      window.scrollTo(0, scrollY)
     }
   }, [isAlbumOpen])
 
@@ -250,7 +269,8 @@ export const PhotoGallery = ({
       <AnimatePresence>
         {isAlbumOpen && (
           <motion.div
-            className="fixed inset-0 z-[100] overflow-y-auto bg-[#09090B]/95 backdrop-blur-xl"
+            className="fixed inset-0 z-[100] overflow-y-auto overscroll-contain bg-[#09090B]/95 backdrop-blur-xl"
+            style={{ touchAction: "pan-y" }}
             role="dialog"
             aria-modal="true"
             aria-label={t("Album ảnh kỷ niệm", "Memory photo album")}
