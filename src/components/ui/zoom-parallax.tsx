@@ -102,7 +102,7 @@ function ParallaxLayer({ image, index, slot, progress, prefersReduced }: Paralla
             ? { scale: focalScale, y: focalY, opacity: focalOpacity, zIndex: slot.depth }
             : { x, y, scale: supportScale, opacity: supportOpacity, filter: blur, zIndex: slot.depth }
       }
-      className="pointer-events-none absolute"
+      className="pointer-events-none absolute inset-0"
     >
       <div className={`relative overflow-visible ${slot.className}`}>
         <Image
