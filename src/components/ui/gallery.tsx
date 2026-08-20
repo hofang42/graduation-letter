@@ -13,7 +13,8 @@ export interface GalleryPhoto {
   alt: string
   captionVi: string
   captionEn: string
-  frame?: "portrait" | "landscape" | "wide"
+  width?: number
+  height?: number
 }
 
 type Direction = "left" | "right"
@@ -30,19 +31,6 @@ const DESKTOP_X = ["-150px", "-75px", "0px", "75px", "150px"]
 const MOBILE_X = ["-30px", "-15px", "0px", "15px", "30px"]
 const OFFSET_Y = ["15px", "32px", "8px", "22px", "44px"]
 const DIRECTIONS: Direction[] = ["left", "left", "right", "right", "left"]
-const getFrameClass = (
-  frame: GalleryPhoto["frame"],
-  isMobile: boolean
-) => {
-  if (isMobile) {
-    return frame === "portrait" ? "aspect-[4/5]" : "aspect-[4/3]"
-  }
-
-  if (frame === "portrait") return "aspect-[3/4]"
-  if (frame === "wide") return "aspect-[16/10]"
-  return "aspect-[4/3]"
-}
-
 export const PhotoGallery = ({
   photos,
   teaserPhotos,
@@ -273,7 +261,6 @@ export const PhotoGallery = ({
             {lightboxIndex === null ? (
               <AlbumOverview
                 photos={albumPhotos}
-                isMobile={isMobile}
                 t={t}
                 onClose={closeAlbum}
                 onOpenPhoto={setLightboxIndex}
@@ -299,13 +286,11 @@ export const PhotoGallery = ({
 
 const AlbumOverview = ({
   photos,
-  isMobile,
   t,
   onClose,
   onOpenPhoto,
 }: {
   photos: GalleryPhoto[]
-  isMobile: boolean
   t: (vi: string, en: string) => string
   onClose: () => void
   onOpenPhoto: (index: number) => void
@@ -351,17 +336,19 @@ const AlbumOverview = ({
             className="group relative block w-full overflow-hidden rounded-sm border border-white/10 bg-[#121215] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C373]"
             aria-label={t(`Mở ảnh: ${photo.captionVi}`, `Open photo: ${photo.captionEn}`)}
           >
-            <div className={cn("relative w-full bg-[#121215] p-1 md:p-2", getFrameClass(photo.frame, isMobile))}>
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 25vw"
-                className="object-contain transition duration-700 ease-out group-hover:scale-[1.02]"
-                loading={index < 4 ? "eager" : "lazy"}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-70 transition group-hover:opacity-90" />
-              <span className="absolute bottom-3 left-3 right-3 text-xs leading-5 text-white/90 md:bottom-4 md:left-4 md:right-4">
+            <div className="bg-[#121215]">
+              <div className="p-1 md:p-2">
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  width={photo.width ?? 3}
+                  height={photo.height ?? 2}
+                  sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 25vw"
+                  className="block h-auto w-full"
+                  loading={index < 4 ? "eager" : "lazy"}
+                />
+              </div>
+              <span className="block border-t border-white/10 px-3 py-3 text-xs leading-5 text-white/90 md:px-4 md:py-4">
                 {t(photo.captionVi, photo.captionEn)}
               </span>
             </div>
@@ -450,12 +437,7 @@ const Lightbox = ({
           <AnimatePresence mode="wait">
             <motion.div
               key={photo.src}
-              className={cn(
-                "relative",
-                isMobile
-                  ? "h-[58dvh] w-[92vw]"
-                  : "h-[68dvh] w-[min(82vw,1200px)]"
-              )}
+              className="flex max-w-full items-center justify-center"
               initial={{ opacity: 0, scale: 0.97, x: 16 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.97, x: -16 }}
@@ -464,10 +446,16 @@ const Lightbox = ({
               <Image
                 src={photo.src}
                 alt={photo.alt}
-                fill
+                width={photo.width ?? 3}
+                height={photo.height ?? 2}
                 priority
-                sizes="(max-width: 767px) 78vw, 70vw"
-                className="object-contain p-1 md:p-3"
+                sizes="(max-width: 767px) 92vw, 82vw"
+                className={cn(
+                  "block h-auto w-auto object-contain",
+                  isMobile
+                    ? "max-h-[58dvh] max-w-[92vw]"
+                    : "max-h-[68dvh] max-w-[min(82vw,1200px)]"
+                )}
               />
             </motion.div>
           </AnimatePresence>
