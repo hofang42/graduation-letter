@@ -111,7 +111,7 @@ export function ZoomParallax({ images, mobileImages = images }: ZoomParallaxProp
                       fill
                       sizes="(max-width: 768px) 90vw, 60vw"
                       loading={index === 0 ? 'eager' : 'lazy'}
-                      className="bg-[#121215] object-contain"
+                      className="bg-[#121215] object-cover"
                     />
                   </div>
                   <span className="pointer-events-none absolute -right-8 -top-5 z-20 font-mono text-[9px] tracking-[0.28em] text-[#c7b07d]/75">
@@ -141,7 +141,7 @@ export function ZoomParallax({ images, mobileImages = images }: ZoomParallaxProp
                       fill
                       sizes="(max-width: 768px) 90vw, 60vw"
                       loading={index === 0 ? 'eager' : 'lazy'}
-                      className="bg-[#121215] object-contain"
+                      className="bg-[#121215] object-cover"
                     />
                   </div>
                 </div>
