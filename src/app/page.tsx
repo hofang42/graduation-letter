@@ -103,10 +103,12 @@ function HomeContent({ isRevealed }: { isRevealed: boolean }) {
     },
     {
       src: '/assets/AnhKyYeu/DSC03611.jpg',
+      mobileSrc: '/assets/AnhKyYeu/DSC03690.jpg',
       alt: 'Graduates seated together during the graduation day',
     },
     {
       src: '/assets/AnhKyYeu/DSC03698.jpg',
+      mobileSrc: '/assets/AnhKyYeu/DSC03692.jpg',
       alt: 'Graduate seated among the auditorium seats in a thoughtful pose',
     },
   ]
