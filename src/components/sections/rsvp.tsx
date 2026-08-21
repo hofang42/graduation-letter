@@ -53,37 +53,30 @@ export function RSVP() {
     setIsSubmitting(true)
     setSubmitError(null)
 
-    const scriptUrl = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL
-    if (!scriptUrl) {
-      console.error('[RSVP] NEXT_PUBLIC_GOOGLE_SCRIPT_URL is not set.')
-      setSubmitError(t(
-        'Form đang được bảo trì. Bạn có thể nhắn tin trực tiếp cho Hoàng nhé!',
-        'The form is under maintenance. Please message Hoang directly!'
-      ))
-      setIsSubmitting(false)
-      return
-    }
-
     const formBody = new URLSearchParams()
     formBody.append('name', formData.name)
     formBody.append('email', formData.email)
     formBody.append('guests', String(isAttending ? formData.guests : 0))
     formBody.append('attendance', formData.attendance)
     formBody.append('message', formData.message)
+    formBody.append('submissionId', crypto.randomUUID())
 
     try {
-      // Apps Script /exec không trả CORS headers — dùng no-cors để
-      // request vẫn tới được script (fire-and-forget). Verify bằng
-      // Google Sheet hoặc Apps Script execution log.
-      await fetch(scriptUrl, {
+      // The same-origin server route calls Apps Script and validates its JSON
+      // response. The success card is shown only after Apps Script returns
+      // result=success (including a successful MailApp.sendEmail call).
+      const response = await fetch('/api/rsvp', {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
         },
         body: formBody.toString(),
-        redirect: 'follow',
       })
+      const result = await response.json() as { result?: string; error?: string }
+
+      if (!response.ok || result.result !== 'success') {
+        throw new Error(result.error || 'RSVP service rejected the submission.')
+      }
 
       setSubmitted(true)
       if (!prefersReduced) {
