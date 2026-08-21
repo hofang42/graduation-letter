@@ -19,18 +19,6 @@ export interface GalleryPhoto {
 
 type Direction = "left" | "right"
 
-type StackPhoto = GalleryPhoto & {
-  id: number
-  order: number
-  y: string
-  zIndex: number
-  direction: Direction
-}
-
-const DESKTOP_X = ["-150px", "-75px", "0px", "75px", "150px"]
-const MOBILE_X = ["-30px", "-15px", "0px", "15px", "30px"]
-const OFFSET_Y = ["15px", "32px", "8px", "22px", "44px"]
-const DIRECTIONS: Direction[] = ["left", "left", "right", "right", "left"]
 export const PhotoGallery = ({
   photos,
   teaserPhotos,
@@ -47,26 +35,14 @@ export const PhotoGallery = ({
   const [isMobile, setIsMobile] = useState(false)
   const [isAlbumOpen, setIsAlbumOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
-  const [photosState, setPhotosState] = useState<StackPhoto[]>(() =>
-    teaserPhotos.slice(0, 5).map((photo, index) => ({
-      ...photo,
-      id: index + 1,
-      order: index,
-      y: OFFSET_Y[index],
-      zIndex: 50 - index * 10,
-      direction: DIRECTIONS[index],
-    }))
-  )
+  const [activeTeaserIndex, setActiveTeaserIndex] = useState(0)
 
   const albumPhotos = useMemo(
     () => Array.from(new Map(photos.map((photo) => [photo.src, photo])).values()),
     [photos]
   )
 
-  const topPhoto = photosState.reduce<StackPhoto | null>(
-    (top, photo) => (!top || photo.zIndex > top.zIndex ? photo : top),
-    null
-  )
+  const activeTeaser = teaserPhotos[activeTeaserIndex] ?? teaserPhotos[0]
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)")
@@ -151,114 +127,105 @@ export const PhotoGallery = ({
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [closeAlbum, isAlbumOpen, lightboxIndex, showNext, showPrevious])
 
-  const sendToBack = (id: number) => {
-    setPhotosState((previous) => {
-      const minZIndex = Math.min(...previous.map((photo) => photo.zIndex))
-      return previous.map((photo) =>
-        photo.id === id ? { ...photo, zIndex: minZIndex - 10 } : photo
-      )
-    })
-  }
-
-  const containerVariants = {
-    hidden: { opacity: 1 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: prefersReduced ? 0 : 0.15,
-        delayChildren: prefersReduced ? 0 : 0.1,
-      },
-    },
-  }
-
-  const photoVariants = {
-    hidden: { x: 0, y: 0, rotate: 0, scale: 1 },
-    visible: (custom: { x: string; y: string; order: number }) => ({
-      x: custom.x,
-      y: custom.y,
-      rotate: 0,
-      scale: 1,
-      transition: prefersReduced
-        ? { duration: 0 }
-        : {
-            type: "spring" as const,
-            stiffness: 70,
-            damping: 12,
-            mass: 1,
-            delay: custom.order * 0.15,
-          },
-    }),
-  }
 
   return (
     <div className="relative mt-16 md:mt-24">
-      <div className="relative mb-10 flex h-[330px] w-full items-center justify-center overflow-visible md:h-[360px]">
-        <motion.div
-          className="relative mx-auto flex w-full max-w-7xl justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isVisible ? 1 : 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-        >
-          <motion.div
-            className="relative flex w-full justify-center"
-            variants={containerVariants}
-            initial="hidden"
-            animate={isLoaded ? "visible" : "hidden"}
-          >
-            <div className="relative h-[220px] w-[220px] md:h-[250px] md:w-[250px]">
-              {[...photosState]
-                .sort((a, b) => a.zIndex - b.zIndex)
-                .map((photo) => (
-                  <motion.div
-                    key={photo.id}
-                    className="absolute left-0 top-0"
-                    style={{ zIndex: photo.zIndex }}
-                    variants={photoVariants}
-                    custom={{
-                      x: isMobile ? MOBILE_X[photo.order] : DESKTOP_X[photo.order],
-                      y: photo.y,
-                      order: photo.order,
-                    }}
+      <motion.div
+        className="mx-auto max-w-6xl"
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: isVisible ? 1 : 0, y: isLoaded ? 0 : 18 }}
+        transition={{ duration: prefersReduced ? 0 : 0.55, ease: "easeOut" }}
+      >
+        <div className="mb-6 flex items-end justify-between gap-4 px-1 sm:mb-8">
+          <p className="text-[10px] uppercase tracking-[0.28em] text-[#A0A0A8]">
+            {t("Một vài khung hình", "A few frames from the day")}
+          </p>
+          <span className="shrink-0 font-mono text-[10px] tracking-[0.22em] text-[#E8C373]">
+            {String(activeTeaserIndex + 1).padStart(2, "0")} / {String(teaserPhotos.length).padStart(2, "0")}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 items-start gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+          {teaserPhotos.map((photo, index) => {
+            const isActive = index === activeTeaserIndex
+
+            return (
+              <motion.figure
+                key={photo.src}
+                className={cn("group min-w-0", index === 1 && "sm:translate-y-6 lg:translate-y-10")}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: prefersReduced ? 0 : 0.5,
+                  delay: prefersReduced ? 0 : index * 0.1,
+                  ease: "easeOut",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setActiveTeaserIndex(index)}
+                  className={cn(
+                    "block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C373] focus-visible:ring-offset-4 focus-visible:ring-offset-[#0A0A0C]",
+                    isActive ? "opacity-100" : "opacity-75 hover:opacity-100"
+                  )}
+                  aria-label={t(`Chọn ảnh: ${photo.captionVi}`, `Select photo: ${photo.captionEn}`)}
+                  aria-pressed={isActive}
+                >
+                  <div
+                    className={cn(
+                      "relative overflow-hidden border bg-[#121215] transition-colors duration-300",
+                      isActive ? "border-[#E8C373]/75" : "border-white/10 group-hover:border-white/35"
+                    )}
                   >
-                    <Photo
-                      width={220}
-                      height={220}
+                    <Image
                       src={photo.src}
                       alt={photo.alt}
-                      direction={photo.direction}
-                      tilt={(((photo.order * 137 + 61) % 30) / 10) + 1}
-                      onActivate={() => sendToBack(photo.id)}
+                      width={photo.width ?? 2500}
+                      height={photo.height ?? 1667}
+                      sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                      className="block h-auto w-full object-contain transition-transform duration-700 ease-out group-hover:scale-[1.025]"
+                      loading={index === 0 ? "eager" : "lazy"}
                     />
-                  </motion.div>
-                ))}
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent opacity-80" />
+                    <span className="absolute bottom-3 left-3 font-mono text-[10px] tracking-[0.2em] text-white/85">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <figcaption className="mt-3 pr-2 text-sm leading-6 text-[#F2EEE8]">
+                    {t(photo.captionVi, photo.captionEn)}
+                  </figcaption>
+                </button>
+              </motion.figure>
+            )
+          })}
+        </div>
 
-      <div className="mx-auto flex max-w-2xl flex-col items-center gap-3 px-6 text-center">
-        <AnimatePresence mode="wait">
-          {topPhoto && (
-            <motion.p
-              key={topPhoto.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35 }}
-              className="min-h-[3.5rem] text-base italic"
-              style={{ color: "rgba(232, 195, 115, 0.85)" }}
-            >
-              {t(topPhoto.captionVi, topPhoto.captionEn)}
-            </motion.p>
-          )}
-        </AnimatePresence>
-        <p className="text-[10px] uppercase tracking-[0.2em] text-[#A0A0A8]">
-          {t("Chạm hoặc kéo ảnh để tạo chuyển động", "Tap or drag a photo to animate the memory")}
-        </p>
+        <div className="mt-8 grid gap-4 border-t border-white/10 pt-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start sm:gap-8">
+          <AnimatePresence mode="wait">
+            {activeTeaser && (
+              <motion.p
+                key={activeTeaser.src}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: prefersReduced ? 0 : 0.3 }}
+                className="max-w-xl text-base italic leading-7 text-[#E8C373]"
+              >
+                {t(activeTeaser.captionVi, activeTeaser.captionEn)}
+              </motion.p>
+            )}
+          </AnimatePresence>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[#A0A0A8] sm:max-w-[18rem] sm:text-right">
+            {t("Chạm vào ảnh để chọn một kỷ niệm", "Tap a photo to choose a memory")}
+          </p>
+        </div>
+      </motion.div>
+
+      <div className="mt-8 flex justify-center">
         <button
           type="button"
           onClick={() => setIsAlbumOpen(true)}
-          className="group mt-4 inline-flex items-center gap-3 rounded-full border border-[#E8C373]/40 bg-[#E8C373]/10 px-6 py-3 text-xs uppercase tracking-[0.18em] text-[#E8C373] transition hover:border-[#E8C373] hover:bg-[#E8C373]/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C373]"
+          className="group inline-flex items-center gap-3 rounded-full border border-[#E8C373]/40 bg-[#E8C373]/10 px-6 py-3 text-xs uppercase tracking-[0.18em] text-[#E8C373] transition hover:border-[#E8C373] hover:bg-[#E8C373]/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C373]"
         >
           <Grid3X3 size={16} strokeWidth={1.5} />
           {t("Mở album kỷ niệm", "Open memory album")}
@@ -341,7 +308,7 @@ const AlbumOverview = ({
       </button>
     </header>
 
-    <div className="columns-2 gap-3 md:columns-3 lg:columns-4 md:gap-5">
+    <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 xl:columns-4">
       {photos.map((photo, index) => (
         <motion.figure
           key={photo.src}
@@ -363,7 +330,7 @@ const AlbumOverview = ({
                   alt={photo.alt}
                   width={photo.width ?? 3}
                   height={photo.height ?? 2}
-                  sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 25vw"
+                  sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 25vw"
                   className="block h-auto w-full"
                   loading={index < 4 ? "eager" : "lazy"}
                 />

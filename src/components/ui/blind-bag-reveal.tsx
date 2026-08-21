@@ -39,7 +39,9 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
   const [isEntering, setIsEntering] = useState(false)
   const [isCompletelyDone, setIsCompletelyDone] = useState(false)
   const { t } = useLanguage()
-  const prefersReducedMotion = useReducedMotion()
+  const prefersReducedMotionSetting = useReducedMotion()
+  const [isHydrated, setIsHydrated] = useState(false)
+  const prefersReducedMotion = isHydrated && prefersReducedMotionSetting
   const bagRef = useRef<HTMLDivElement>(null)
   const dragHandleRef = useRef<HTMLDivElement>(null)
   const enterButtonRef = useRef<HTMLButtonElement>(null)
@@ -65,6 +67,13 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
       value: t('Đại học FPT Đà Nẵng', 'FPT University Da Nang'),
     },
   ]
+
+  useEffect(() => {
+    // Do not let the browser's reduced-motion preference change the
+    // server/client HTML during hydration. Apply it after the first mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsHydrated(true)
+  }, [])
 
   useEffect(() => {
     if (bagRef.current) {

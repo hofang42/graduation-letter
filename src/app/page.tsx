@@ -21,8 +21,17 @@ import Lenis from 'lenis'
 
 function HomeContent({ isRevealed }: { isRevealed: boolean }) {
   const { t } = useLanguage()
-  const prefersReduced = useReducedMotion()
+  const prefersReducedSetting = useReducedMotion()
+  const [isHydrated, setIsHydrated] = useState(false)
+  const prefersReduced = isHydrated && prefersReducedSetting
   const guest = useGuestName()
+
+  useEffect(() => {
+    // Keep the server HTML and the first client render identical. The
+    // user's media preference is applied only after hydration completes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsHydrated(true)
+  }, [])
 
   // When the intro overlay unmounts, hand keyboard focus to the page —
   // must run after the commit that removes `inert` from <main>.
@@ -32,26 +41,12 @@ function HomeContent({ isRevealed }: { isRevealed: boolean }) {
     }
   }, [isRevealed])
 
+  // Desktop uses only landscape assets so every frame can share the original
+  // editorial 3:2 treatment without black side gutters.
   const parallaxImages = [
-    {
-      src: '/assets/AnhKyYeu/TaiAnh-07897.jpg',
-      alt: 'Graduate reaching toward a flying graduation cap',
-    },
     {
       src: '/assets/AnhKyYeu/DSC03617.jpg',
       alt: 'Five graduates sharing a joyful moment in the auditorium',
-    },
-    {
-      src: '/assets/AnhKyYeu/TaiAnh-07859.jpg',
-      alt: 'Portrait of Phan Le Thanh Hoang holding graduation folders',
-    },
-    {
-      src: '/assets/AnhKyYeu/TaiAnh-07903.jpg',
-      alt: 'Graduate smiling while holding a graduation folder',
-    },
-    {
-      src: '/assets/AnhKyYeu/TaiAnh-07883.jpg',
-      alt: 'Graduate smiling and pointing to his graduation folder',
     },
     {
       src: '/assets/AnhKyYeu/DSC03624.jpg',
@@ -60,6 +55,59 @@ function HomeContent({ isRevealed }: { isRevealed: boolean }) {
     {
       src: '/assets/AnhKyYeu/DSC03629.jpg',
       alt: 'Wide-angle group portrait of five graduates in the auditorium',
+    },
+    {
+      src: '/assets/AnhKyYeu/DSC03614.jpg',
+      alt: 'Graduates gathered in the auditorium before the ceremony',
+    },
+    {
+      src: '/assets/AnhKyYeu/DSC03619.jpg',
+      alt: 'Graduates celebrating together in the auditorium',
+    },
+    {
+      src: '/assets/AnhKyYeu/DSC03611.jpg',
+      alt: 'Graduates seated together during the graduation day',
+    },
+    {
+      src: '/assets/AnhKyYeu/DSC03698.jpg',
+      alt: 'Graduate seated among the auditorium seats in a thoughtful pose',
+    },
+  ]
+
+  // Mobile stays on the previously approved portrait composition.
+  const mobileParallaxImages = [
+    {
+      src: '/assets/AnhKyYeu/DSC03617.jpg',
+      mobileSrc: '/assets/AnhKyYeu/TaiAnh-07897.jpg',
+      alt: 'Five graduates sharing a joyful moment in the auditorium',
+    },
+    {
+      src: '/assets/AnhKyYeu/DSC03624.jpg',
+      mobileSrc: '/assets/AnhKyYeu/TaiAnh-07859.jpg',
+      alt: 'Five graduates posing together among auditorium seats',
+    },
+    {
+      src: '/assets/AnhKyYeu/DSC03629.jpg',
+      mobileSrc: '/assets/AnhKyYeu/TaiAnh-07903.jpg',
+      alt: 'Wide-angle group portrait of five graduates in the auditorium',
+    },
+    {
+      src: '/assets/AnhKyYeu/DSC03614.jpg',
+      mobileSrc: '/assets/AnhKyYeu/TaiAnh-07883.jpg',
+      alt: 'Graduates gathered in the auditorium before the ceremony',
+    },
+    {
+      src: '/assets/AnhKyYeu/DSC03619.jpg',
+      mobileSrc: '/assets/AnhKyYeu/DSC03637.jpg',
+      alt: 'Graduates celebrating together in the auditorium',
+    },
+    {
+      src: '/assets/AnhKyYeu/DSC03611.jpg',
+      alt: 'Graduates seated together during the graduation day',
+    },
+    {
+      src: '/assets/AnhKyYeu/DSC03698.jpg',
+      alt: 'Graduate seated among the auditorium seats in a thoughtful pose',
     },
   ]
 
@@ -146,7 +194,7 @@ function HomeContent({ isRevealed }: { isRevealed: boolean }) {
       </motion.div>
 
       <motion.div variants={blockVariants}>
-        <ZoomParallax images={parallaxImages} />
+        <ZoomParallax images={parallaxImages} mobileImages={mobileParallaxImages} />
       </motion.div>
 
       <motion.div variants={blockVariants}><Hero /></motion.div>
