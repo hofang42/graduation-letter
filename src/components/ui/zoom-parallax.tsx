@@ -85,6 +85,14 @@ export function ZoomParallax({ images, mobileImages = images }: ZoomParallaxProp
   return (
     <div ref={container} className="relative h-[100dvh] motion-safe:h-[300vh]">
       <div className="sticky top-0 h-[100dvh] overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 hidden opacity-70 md:block"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 50% 44%, rgba(194, 166, 105, 0.10), transparent 34%), radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.035) 0 1px, transparent 1.5px), repeating-radial-gradient(circle at 72% 62%, rgba(196, 167, 105, 0.018) 0 1px, transparent 1px 7px)',
+          }}
+        />
         <div className="absolute inset-0 hidden md:block" aria-label="Graduation memories">
           {images.map(({ src, alt }, index) => {
             const scale = desktopScales[index % desktopScales.length]
@@ -95,15 +103,20 @@ export function ZoomParallax({ images, mobileImages = images }: ZoomParallaxProp
                 style={prefersReduced ? undefined : { scale }}
                 className={`absolute top-0 flex h-full w-full items-center justify-center ${desktopSlotClasses[index] ?? ''}`}
               >
-                <div className="relative h-[25vh] w-[25vw]">
-                  <Image
-                    src={src || '/placeholder.svg'}
-                    alt={alt ?? `Parallax image ${index + 1}`}
-                    fill
-                    sizes="(max-width: 768px) 90vw, 60vw"
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    className="bg-[#121215] object-contain"
-                  />
+                <div className="relative h-[25vh] w-[25vw] border border-[#c7b07d]/60 bg-[#121215] shadow-[6px_6px_0_rgba(194,166,105,0.16),0_14px_28px_rgba(0,0,0,0.34)] before:pointer-events-none before:absolute before:inset-[3px] before:z-10 before:border before:border-white/10 before:content-['']">
+                  <div className="absolute inset-[6px]">
+                    <Image
+                      src={src || '/placeholder.svg'}
+                      alt={alt ?? `Parallax image ${index + 1}`}
+                      fill
+                      sizes="(max-width: 768px) 90vw, 60vw"
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                      className="bg-[#121215] object-contain"
+                    />
+                  </div>
+                  <span className="pointer-events-none absolute -right-8 -top-5 z-20 font-mono text-[9px] tracking-[0.28em] text-[#c7b07d]/75">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
                 </div>
               </motion.div>
             )
@@ -120,15 +133,17 @@ export function ZoomParallax({ images, mobileImages = images }: ZoomParallaxProp
                 style={prefersReduced ? undefined : { scale }}
                 className={`absolute top-0 flex h-full w-full items-center justify-center ${mobileFrameClasses[index] ?? ''}`}
               >
-                <div className="relative h-[25vh] w-[25vw]">
-                  <Image
-                    src={mobileSrc ?? src ?? '/placeholder.svg'}
-                    alt={alt ?? `Graduation portrait ${index + 1}`}
-                    fill
-                    sizes="(max-width: 768px) 90vw, 60vw"
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    className="bg-[#121215] object-contain"
-                  />
+                <div className="relative h-[25vh] w-[25vw] border border-white/25 bg-[#121215] p-[2px] shadow-[3px_3px_0_rgba(194,166,105,0.12),0_7px_14px_rgba(0,0,0,0.28)]">
+                  <div className="relative h-full w-full overflow-hidden">
+                    <Image
+                      src={mobileSrc ?? src ?? '/placeholder.svg'}
+                      alt={alt ?? `Graduation portrait ${index + 1}`}
+                      fill
+                      sizes="(max-width: 768px) 90vw, 60vw"
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                      className="bg-[#121215] object-contain"
+                    />
+                  </div>
                 </div>
               </motion.div>
             )
