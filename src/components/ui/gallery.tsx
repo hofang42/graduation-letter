@@ -1,6 +1,7 @@
 "use client"
 
 import { Ref, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 import Image, { ImageProps } from "next/image"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Grid3X3, X } from "lucide-react"
@@ -233,40 +234,45 @@ export const PhotoGallery = ({
         </button>
       </div>
 
-      <AnimatePresence>
-        {isAlbumOpen && (
-          <motion.div
-            className="fixed inset-0 z-[100] overflow-y-auto overscroll-contain bg-[#09090B]/95 backdrop-blur-xl"
-            style={{ touchAction: "pan-y" }}
-            role="dialog"
-            aria-modal="true"
-            aria-label={t("Album ảnh kỷ niệm", "Memory photo album")}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {lightboxIndex === null ? (
-              <AlbumOverview
-                photos={albumPhotos}
-                t={t}
-                onClose={closeAlbum}
-                onOpenPhoto={setLightboxIndex}
-              />
-            ) : (
-              <Lightbox
-                photos={albumPhotos}
-                index={lightboxIndex}
-                isMobile={isMobile}
-                t={t}
-                onClose={() => setLightboxIndex(null)}
-                onNext={showNext}
-                onPrevious={showPrevious}
-                onSelect={setLightboxIndex}
-              />
+      {isAlbumOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {isAlbumOpen && (
+              <motion.div
+                className="fixed inset-0 z-[100] h-[100dvh] min-h-[100dvh] w-screen max-w-none overflow-y-auto overscroll-none bg-[#09090B] backdrop-blur-xl [isolation:isolate]"
+                style={{ touchAction: "pan-y" }}
+                role="dialog"
+                aria-modal="true"
+                aria-label={t("Album ảnh kỷ niệm", "Memory photo album")}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                {lightboxIndex === null ? (
+                  <AlbumOverview
+                    photos={albumPhotos}
+                    t={t}
+                    onClose={closeAlbum}
+                    onOpenPhoto={setLightboxIndex}
+                  />
+                ) : (
+                  <Lightbox
+                    photos={albumPhotos}
+                    index={lightboxIndex}
+                    isMobile={isMobile}
+                    t={t}
+                    onClose={() => setLightboxIndex(null)}
+                    onNext={showNext}
+                    onPrevious={showPrevious}
+                    onSelect={setLightboxIndex}
+                  />
+                )}
+              </motion.div>
             )}
-          </motion.div>
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </div>
   )
 }
