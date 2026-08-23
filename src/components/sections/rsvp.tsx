@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { scaleIn, viewportOnce } from '@/lib/animations'
 import {
-  Send, CheckCircle, User, Users, MessageSquare, Mail,
+  Send, CheckCircle, User, Users, MessageSquare, Mail, Phone,
   Minus, Plus, CalendarPlus, MapPin,
 } from 'lucide-react'
 import confetti from 'canvas-confetti'
@@ -117,22 +117,31 @@ export function RSVP() {
           chapterId="rsvp"
           title={t('Bạn Sẽ Đến Chứ?', 'Will You Be There?')}
           gradient="warm"
-          subtitle={
-            <span className="block space-y-1.5">
-              <span className="block">{t('Sự hiện diện của bạn là niềm vui lớn nhất', "We'd love to celebrate with you")}</span>
-              <code className="block font-mono text-xs not-italic">
-                <span className="text-[#A0A0A8]">await</span>{' '}
-                <span className="text-[#E8C373]">rsvp</span>
-                <span className="text-[#A0A0A8]">.</span>
-                <span className="text-[#DCA543]">confirm</span>
-                <span className="text-[#A0A0A8]">{'({ attending: '}</span>
-                <span className="text-[#E8C373]">{isAttending ? 'true' : 'false'}</span>
-                <span className="text-[#A0A0A8]">{' })'}</span>
-              </code>
-            </span>
-          }
+          subtitle={t('Sự hiện diện của bạn là niềm vui lớn nhất', "We'd love to celebrate with you")}
           className="mb-12"
         />
+
+        <div className="mb-6 flex items-center justify-between gap-4 rounded-2xl border border-[#DCA543]/15 bg-[#DCA543]/[0.06] px-4 py-3.5 sm:px-5">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#DCA543]/25 bg-[#DCA543]/10">
+              <Phone size={16} className="text-[#E8C373]" />
+            </div>
+            <div className="min-w-0 text-left">
+              <p className="text-[10px] uppercase tracking-[0.16em] text-[#A0A0A8]">
+                {t('Nếu tôi không thể nghe máy', 'If I cannot answer')}
+              </p>
+              <p className="mt-1 truncate text-sm font-semibold text-white">Ánh Dương · 0846 118 862</p>
+            </div>
+          </div>
+          <a
+            href="tel:0846118862"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#E8C373]/45 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#E8C373] transition hover:border-[#E8C373] hover:bg-[#E8C373]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C373]"
+            aria-label={t('Gọi cho Ánh Dương', 'Call Ánh Dương')}
+          >
+            <Phone size={14} />
+            <span className="hidden sm:inline">{t('Gọi', 'Call')}</span>
+          </a>
+        </div>
 
         <motion.div
           variants={scaleIn}

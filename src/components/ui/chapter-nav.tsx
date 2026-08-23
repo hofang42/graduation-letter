@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from 'framer-motion'
-import { CalendarPlus, MapPin, Send } from 'lucide-react'
+import { CalendarPlus, MapPin, Phone, Send } from 'lucide-react'
 import { CHAPTERS } from '@/lib/sections'
 import { scrollToId } from '@/lib/lenis'
 import { useLanguage } from '@/lib/language-context'
@@ -134,6 +134,14 @@ export function ChapterNav({ visible }: { visible: boolean }) {
             >
               <MapPin size={14} />
               {t('Bản đồ', 'Map')}
+            </a>
+            <a
+              href="tel:0846118862"
+              className="flex items-center gap-1.5 rounded-full px-3.5 py-2.5 text-[11px] font-medium text-[#E8C373]"
+              aria-label={t('Gọi cho Ánh Dương', 'Call Ánh Dương')}
+            >
+              <Phone size={14} />
+              {t('Liên hệ', 'Contact')}
             </a>
           </motion.nav>
         )}
