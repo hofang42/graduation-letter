@@ -326,11 +326,9 @@ export function RSVP() {
                     <Send size={18} />
                   )}
                   <span>
-                    {isSubmitting
-                      ? t('Đang Gửi...', 'Sending...')
-                      : isAttending
-                        ? t('Xác Nhận Tham Dự', 'Confirm Attendance')
-                        : t('Gửi Lời Nhắn', 'Send RSVP')}
+                    {isAttending
+                      ? t('Xác Nhận Tham Dự', 'Confirm Attendance')
+                      : t('Gửi Lời Nhắn', 'Send RSVP')}
                   </span>
                 </motion.button>
               </motion.form>
