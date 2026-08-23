@@ -283,6 +283,15 @@ const AlbumOverview = ({
   onOpenPhoto: (index: number) => void
 }) => (
   <div className="mx-auto min-h-full max-w-7xl overscroll-y-contain px-5 py-6 pb-28 md:px-10 md:py-10 md:pb-32">
+    <button
+      type="button"
+      onClick={onClose}
+      className="fixed right-4 top-4 z-[120] rounded-full border border-white/15 bg-[#121215]/90 p-3 text-[#E8C373] shadow-lg backdrop-blur-md transition hover:border-[#E8C373] hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C373] md:right-8 md:top-6"
+      aria-label={t("Đóng album", "Close album")}
+    >
+      <X size={20} />
+    </button>
+
     <header className="mb-8 flex items-start justify-between gap-6 border-b border-white/10 pb-6 md:mb-12">
       <div>
         <p className="mb-3 text-[10px] uppercase tracking-[0.28em] text-[#E8C373]">
@@ -298,14 +307,6 @@ const AlbumOverview = ({
           )}
         </p>
       </div>
-      <button
-        type="button"
-        onClick={onClose}
-        className="rounded-full border border-white/15 p-3 text-[#E8C373] transition hover:border-[#E8C373] hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C373]"
-        aria-label={t("Đóng album", "Close album")}
-      >
-        <X size={20} />
-      </button>
     </header>
 
     <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 xl:columns-4">
@@ -390,7 +391,7 @@ const Lightbox = ({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full border border-white/15 p-2 text-white/80 transition hover:border-[#E8C373] hover:text-[#E8C373] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C373]"
+            className="fixed right-4 top-4 z-[120] rounded-full border border-white/15 bg-[#121215]/90 p-2 text-white/80 shadow-lg backdrop-blur-md transition hover:border-[#E8C373] hover:text-[#E8C373] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C373] md:right-8 md:top-6"
             aria-label={t("Đóng ảnh toàn màn hình", "Close fullscreen photo")}
           >
             <X size={18} />
