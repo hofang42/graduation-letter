@@ -7,13 +7,9 @@ import { useRef } from 'react'
 import { useLanguage } from '@/lib/language-context'
 import { SectionHeading } from '@/components/ui/section-heading'
 
-// The four years told as a commit history — each milestone is a commit,
-// graduation ships as v1.0.0.
 const milestones = [
   {
     year: '2022',
-    hash: 'a3f2c91',
-    commit: 'init: enrolled @ fpt-university-danang',
     titleVi: 'Bắt đầu hành trình',
     titleEn: 'The Beginning',
     descVi: 'Ngày đầu tiên bước chân vào Đại học FPT Đà Nẵng, mở ra chương mới đầy háo hức.',
@@ -23,8 +19,6 @@ const milestones = [
   },
   {
     year: '2023',
-    hash: 'b7d04e2',
-    commit: 'feat: clubs, team projects & new passions',
     titleVi: 'Khám phá & Phát triển',
     titleEn: 'Exploration & Growth',
     descVi: 'Tham gia câu lạc bộ, dự án nhóm, và khám phá niềm đam mê với công nghệ.',
@@ -34,8 +28,6 @@ const milestones = [
   },
   {
     year: '2024',
-    hash: 'c1e88a7',
-    commit: 'feat(intern): first code shipped to production',
     titleVi: 'Thực tập chuyên nghiệp',
     titleEn: 'Professional Internship',
     descVi: 'Bước ra thế giới thực, áp dụng kiến thức vào môi trường doanh nghiệp.',
@@ -45,8 +37,6 @@ const milestones = [
   },
   {
     year: '2025',
-    hash: 'd94f3b0',
-    commit: 'perf: hackathons, contests & awards',
     titleVi: 'Cuộc thi & Giải thưởng',
     titleEn: 'Competitions & Awards',
     descVi: 'Tham gia các cuộc thi lập trình, hackathon và đạt thành tích đáng tự hào.',
@@ -56,8 +46,6 @@ const milestones = [
   },
   {
     year: '2026',
-    hash: 'e5c217d',
-    commit: 'docs: thesis defended successfully',
     titleVi: 'Bảo vệ luận văn',
     titleEn: 'Thesis Defense',
     descVi: 'Hoàn thành và bảo vệ thành công luận văn tốt nghiệp — cột mốc quan trọng.',
@@ -67,9 +55,6 @@ const milestones = [
   },
   {
     year: '08/2026',
-    hash: 'f0a6e39',
-    commit: 'release: graduation',
-    tag: 'v1.0.0',
     titleVi: 'Tốt nghiệp',
     titleEn: 'Graduation',
     descVi: 'Chính thức trở thành Kỹ sư Công nghệ Thông tin — điểm kết thúc của một hành trình tuyệt vời.',
@@ -104,11 +89,7 @@ export function Journey() {
         <SectionHeading
           chapterId="journey"
           title={t('Câu Chuyện Bốn Năm', 'A Story Four Years In The Making')}
-          subtitle={
-            <span className="font-mono text-xs text-[#DCA543]/75">
-              $ git log --oneline --graph
-            </span>
-          }
+          subtitle={t('Mỗi cột mốc là một phần đáng nhớ của hành trình.', 'Every milestone is a meaningful part of the journey.')}
           className="mb-16 md:mb-20"
         />
 
@@ -175,23 +156,8 @@ export function Journey() {
                         >
                           {milestone.year}
                         </span>
-                        {milestone.tag && (
-                          <span
-                            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[10px] tracking-wide"
-                            style={{
-                              border: '1px solid rgba(220, 165, 67, 0.4)',
-                              color: '#E8C373',
-                              boxShadow: '0 0 16px rgba(220, 165, 67, 0.15)',
-                            }}
-                          >
-                            tag: {milestone.tag}
-                          </span>
-                        )}
+
                       </div>
-                      <p className="font-mono text-[10px] leading-relaxed mb-2 text-[#A0A0A8]/80 break-words">
-                        <span className="text-[#DCA543]/60">{milestone.hash}</span>
-                        {' '}{milestone.commit}
-                      </p>
                       <h3 className="font-[family-name:var(--font-playfair)] text-lg font-semibold text-white mb-1">
                         {t(milestone.titleVi, milestone.titleEn)}
                       </h3>

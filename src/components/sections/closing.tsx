@@ -1,84 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { fadeUp, fadeIn, viewportOnce } from '@/lib/animations'
 import { Heart } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 import { ChapterEyebrow } from '@/components/ui/section-heading'
-
-const CMD = './graduate.sh --with-honors'
-
-// A quiet terminal sign-off: the command types itself, then the result
-// prints — the engineer's way of saying "done".
-function TerminalSignOff() {
-  const { t } = useLanguage()
-  const prefersReduced = useReducedMotion()
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
-  // Server-identical initial state — branching on useReducedMotion in
-  // useState seeds would cause a hydration mismatch.
-  const [typed, setTyped] = useState('')
-  const [done, setDone] = useState(false)
-
-  useEffect(() => {
-    if (!inView) return
-    if (prefersReduced) {
-      // One-shot completion when the block scrolls into view — the typed
-      // animation is skipped entirely for reduced-motion users.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setTyped(CMD)
-      setDone(true)
-      return
-    }
-    let i = 0
-    const id = setInterval(() => {
-      i += 1
-      setTyped(CMD.slice(0, i))
-      if (i >= CMD.length) {
-        clearInterval(id)
-        setTimeout(() => setDone(true), 350)
-      }
-    }, 45)
-    return () => clearInterval(id)
-  }, [inView, prefersReduced])
-
-  return (
-    <div
-      ref={ref}
-      className="mx-auto max-w-md rounded-xl px-5 py-4 text-left font-mono text-[11px] md:text-xs leading-relaxed"
-      style={{
-        background: 'rgba(18, 18, 21, 0.6)',
-        border: '1px solid rgba(220, 165, 67, 0.12)',
-      }}
-    >
-      <p className="text-[#A0A0A8]">
-        <span className="text-[#DCA543]">hoang@fptu</span>
-        <span className="text-white/40">:~$</span>{' '}
-        <span className="text-white/85">{typed}</span>
-        {!done && (
-          <motion.span
-            className="text-[#E8C373]"
-            animate={prefersReduced ? {} : { opacity: [1, 1, 0, 0] }}
-            transition={{ duration: 1, repeat: Infinity, times: [0, 0.5, 0.5, 1] }}
-          >
-            ▍
-          </motion.span>
-        )}
-      </p>
-      {done && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          className="mt-1.5 text-[#E8C373]/85"
-        >
-          ✓ {t('biên dịch thành công sau 4 năm · 0 lỗi hối tiếc', 'compiled successfully in 4 years · 0 regrets')}
-        </motion.p>
-      )}
-    </div>
-  )
-}
 
 export function Closing() {
   const prefersReduced = useReducedMotion()
@@ -154,10 +80,6 @@ export function Closing() {
             )}
           </p>
 
-          <div className="py-4">
-            <TerminalSignOff />
-          </div>
-
           <div className="section-divider mx-auto w-24 my-6" />
 
           <p
@@ -192,17 +114,6 @@ export function Closing() {
           ))}
         </div>
 
-        {/* Colophon — the maker's mark */}
-        <motion.p
-          variants={fadeIn}
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-          className="mt-8 font-mono text-[10px] tracking-[0.12em]"
-          style={{ color: 'rgba(160, 160, 168, 0.55)' }}
-        >
-          v1.0.0 · {t('biên dịch bằng', 'compiled with')} Next.js + {t('lòng biết ơn', 'gratitude')} · Đà Nẵng 2026
-        </motion.p>
       </div>
     </section>
   )
