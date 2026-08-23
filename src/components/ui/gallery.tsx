@@ -68,28 +68,19 @@ export const PhotoGallery = ({
   useEffect(() => {
     if (!isAlbumOpen) return
 
-    const scrollY = window.scrollY
     const html = document.documentElement
     const body = document.body
     const originalHtmlOverflow = html.style.overflow
     const originalBodyOverflow = body.style.overflow
-    const originalBodyPosition = body.style.position
-    const originalBodyTop = body.style.top
-    const originalBodyWidth = body.style.width
 
+    // Lock the page behind the modal without fixing the body itself. Fixing
+    // body can trap wheel/touch scrolling on desktop browsers and mobile Safari.
     html.style.overflow = "hidden"
-    body.style.position = "fixed"
-    body.style.top = `-${scrollY}px`
-    body.style.width = "100%"
     body.style.overflow = "hidden"
 
     return () => {
       html.style.overflow = originalHtmlOverflow
       body.style.overflow = originalBodyOverflow
-      body.style.position = originalBodyPosition
-      body.style.top = originalBodyTop
-      body.style.width = originalBodyWidth
-      window.scrollTo(0, scrollY)
     }
   }, [isAlbumOpen])
 
@@ -249,7 +240,7 @@ export const PhotoGallery = ({
                 exit={{ opacity: 0 }}
               >
                 <div
-                  className="h-full min-h-0 w-full overflow-y-auto overscroll-y-contain"
+                  className="h-full min-h-0 w-full overflow-y-scroll overscroll-y-contain [scrollbar-gutter:stable]"
                   style={{ touchAction: "pan-y" }}
                 >
                   {lightboxIndex === null ? (
