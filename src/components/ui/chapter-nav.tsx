@@ -136,7 +136,7 @@ export function ChapterNav({ visible }: { visible: boolean }) {
               {t('Bản đồ', 'Map')}
             </a>
             <a
-              href="tel:0846118862"
+              href="tel:0856118852"
               className="flex items-center gap-1.5 rounded-full px-3.5 py-2.5 text-[11px] font-medium text-[#E8C373]"
               aria-label={t('Gọi cho Ánh Dương', 'Call Ánh Dương')}
             >

@@ -130,11 +130,11 @@ export function RSVP() {
               <p className="text-[10px] uppercase tracking-[0.16em] text-[#A0A0A8]">
                 {t('Nếu tôi không thể nghe máy', 'If I cannot answer')}
               </p>
-              <p className="mt-1 truncate text-sm font-semibold text-white">Ánh Dương · 0846 118 862</p>
+              <p className="mt-1 truncate text-sm font-semibold text-white">Ánh Dương · 0856 118 852</p>
             </div>
           </div>
           <a
-            href="tel:0846118862"
+            href="tel:0856118852"
             className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#E8C373]/45 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#E8C373] transition hover:border-[#E8C373] hover:bg-[#E8C373]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C373]"
             aria-label={t('Gọi cho Ánh Dương', 'Call Ánh Dương')}
           >
