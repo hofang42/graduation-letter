@@ -59,7 +59,7 @@ export function BlindBagReveal({ onReveal }: BlindBagRevealProps = {}) {
     {
       icon: Clock,
       label: t('Giờ', 'Time'),
-      value: EVENT.timeVi,
+      value: t(EVENT.timeVi, EVENT.timeEn),
     },
     {
       icon: MapPin,
