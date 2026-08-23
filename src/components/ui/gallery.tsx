@@ -240,8 +240,7 @@ export const PhotoGallery = ({
           <AnimatePresence>
             {isAlbumOpen && (
               <motion.div
-                className="fixed inset-0 z-[100] h-[100dvh] min-h-[100dvh] w-screen max-w-none overflow-y-auto overscroll-none bg-[#09090B] backdrop-blur-xl [isolation:isolate]"
-                style={{ touchAction: "pan-y" }}
+                className="fixed inset-0 z-[100] h-[100dvh] w-screen max-w-none overflow-hidden bg-[#09090B] backdrop-blur-xl [isolation:isolate]"
                 role="dialog"
                 aria-modal="true"
                 aria-label={t("Album ảnh kỷ niệm", "Memory photo album")}
@@ -249,25 +248,30 @@ export const PhotoGallery = ({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                {lightboxIndex === null ? (
-                  <AlbumOverview
-                    photos={albumPhotos}
-                    t={t}
-                    onClose={closeAlbum}
-                    onOpenPhoto={setLightboxIndex}
-                  />
-                ) : (
-                  <Lightbox
-                    photos={albumPhotos}
-                    index={lightboxIndex}
-                    isMobile={isMobile}
-                    t={t}
-                    onClose={() => setLightboxIndex(null)}
-                    onNext={showNext}
-                    onPrevious={showPrevious}
-                    onSelect={setLightboxIndex}
-                  />
-                )}
+                <div
+                  className="h-full min-h-0 w-full overflow-y-auto overscroll-y-contain"
+                  style={{ touchAction: "pan-y" }}
+                >
+                  {lightboxIndex === null ? (
+                    <AlbumOverview
+                      photos={albumPhotos}
+                      t={t}
+                      onClose={closeAlbum}
+                      onOpenPhoto={setLightboxIndex}
+                    />
+                  ) : (
+                    <Lightbox
+                      photos={albumPhotos}
+                      index={lightboxIndex}
+                      isMobile={isMobile}
+                      t={t}
+                      onClose={() => setLightboxIndex(null)}
+                      onNext={showNext}
+                      onPrevious={showPrevious}
+                      onSelect={setLightboxIndex}
+                    />
+                  )}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>,
@@ -288,7 +292,7 @@ const AlbumOverview = ({
   onClose: () => void
   onOpenPhoto: (index: number) => void
 }) => (
-  <div className="mx-auto min-h-full max-w-7xl overscroll-y-contain px-5 py-6 pb-28 md:px-10 md:py-10 md:pb-32">
+  <div className="mx-auto min-h-full max-w-7xl px-5 py-6 pb-28 md:px-10 md:py-10 md:pb-32">
     <div className="sticky top-4 z-[120] mb-4 flex justify-end pointer-events-none md:top-6">
       <button
         type="button"
@@ -384,7 +388,7 @@ const Lightbox = ({
   const touchStartX = useRef<number | null>(null)
 
   return (
-    <div className="min-h-full overflow-y-auto px-4 py-5 pb-12 md:px-8 md:py-8">
+    <div className="min-h-full px-4 py-5 pb-12 md:px-8 md:py-8">
       <header className="sticky top-0 z-[120] mx-auto flex max-w-7xl items-center justify-between gap-4 border-b border-white/10 bg-[#09090B]/95 py-3 backdrop-blur-xl">
         <button
           type="button"
