@@ -4,12 +4,12 @@
 
 export const EVENT = {
   dateConfirmed: true,
-  start: new Date('2026-09-12T06:30:00+07:00'),
-  end: new Date('2026-09-12T10:00:00+07:00'),
+  start: new Date('2026-09-12T08:00:00+07:00'),
+  end: new Date('2026-09-12T10:30:00+07:00'),
   dateVi: 'Ngày 12 tháng 9, 2026',
   dateEn: 'September 12, 2026',
-  timeVi: '06:30 sáng',
-  timeEn: '6:30 AM',
+  timeVi: '08:00 sáng',
+  timeEn: '8:00 AM',
   titleVi: 'Lễ Tốt Nghiệp — Phan Lê Thanh Hoàng',
   titleEn: 'Graduation Ceremony — Phan Le Thanh Hoang',
   venue: 'Trường Đại học FPT Đà Nẵng',

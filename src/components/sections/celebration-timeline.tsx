@@ -8,7 +8,7 @@ import { SectionHeading } from '@/components/ui/section-heading'
 
 const events = [
   {
-    time: '06:30',
+    time: '08:00',
     titleVi: 'Đón tiếp & Ổn định chỗ ngồi',
     titleEn: 'Guest Check-in & Seating',
     descVi: 'Đón khách, check-in và ổn định chỗ ngồi',

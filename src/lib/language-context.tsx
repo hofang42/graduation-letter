@@ -18,20 +18,28 @@ const LanguageContext = createContext<LanguageContextType>({
 
 const STORAGE_KEY = 'graduation-lang'
 
+function getLanguageFromUrl(): Language | null {
+  const value = new URLSearchParams(window.location.search).get('lang')?.toLowerCase()
+  return value === 'vi' || value === 'en' ? value : null
+}
+
+function setLanguageInUrl(lang: Language) {
+  const url = new URL(window.location.href)
+  url.searchParams.set('lang', lang)
+  window.history.replaceState(window.history.state, '', url)
+}
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Language>('vi')
 
-  // Restore a saved choice, or default English speakers to EN.
-  // One-shot client init: localStorage is unavailable during SSR, so the
-  // state has to be corrected after mount.
+  // The URL is the source of truth for shared links. Explicit lang=vi or
+  // lang=en wins; when lang is omitted, the invitation defaults to English.
   useEffect(() => {
-    const saved = window.localStorage.getItem(STORAGE_KEY)
-    if (saved === 'vi' || saved === 'en') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLang(saved)
-    } else if (!navigator.language.toLowerCase().startsWith('vi')) {
-      setLang('en')
-    }
+    const next: Language = getLanguageFromUrl() ?? 'en'
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLang(next)
+    window.localStorage.setItem(STORAGE_KEY, next)
   }, [])
 
   // Keep <html lang> in sync so screen readers switch pronunciation.
@@ -43,6 +51,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setLang((prev) => {
       const next = prev === 'vi' ? 'en' : 'vi'
       window.localStorage.setItem(STORAGE_KEY, next)
+      setLanguageInUrl(next)
       return next
     })
   }, [])
