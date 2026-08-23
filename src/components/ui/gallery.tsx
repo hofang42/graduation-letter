@@ -231,16 +231,26 @@ export const PhotoGallery = ({
           <AnimatePresence>
             {isAlbumOpen && (
               <motion.div
-                className="fixed inset-0 z-[100] h-[100dvh] w-screen max-w-none overflow-hidden bg-[#09090B] backdrop-blur-xl [isolation:isolate]"
+                className="fixed inset-0 z-[100] h-[100dvh] w-screen max-w-none overflow-hidden bg-[#09090B] backdrop-blur-xl [isolation:isolate] md:overflow-y-auto md:overscroll-y-contain"
                 role="dialog"
                 aria-modal="true"
                 aria-label={t("Album ảnh kỷ niệm", "Memory photo album")}
+                onWheelCapture={(event) => {
+                  // Desktop uses the outer modal as its scroll container. Some
+                  // browsers keep wheel input on the page behind a portal, so
+                  // route the wheel delta directly to this container. Mobile
+                  // keeps the existing inner touch-scrolling behavior.
+                  if (!isMobile) {
+                    event.preventDefault()
+                    event.currentTarget.scrollTop += event.deltaY
+                  }
+                }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
                 <div
-                  className="h-full min-h-0 w-full overflow-y-scroll overscroll-y-contain [scrollbar-gutter:stable]"
+                  className="h-full min-h-0 w-full overflow-y-scroll overscroll-y-contain [scrollbar-gutter:stable] md:h-auto md:min-h-full md:overflow-visible"
                   style={{ touchAction: "pan-y" }}
                 >
                   {lightboxIndex === null ? (
